@@ -33,6 +33,7 @@ export class PublicDashboardComponent implements OnInit {
 	options;
 	gridStackEl;
 	// tslint:disable-next-line: max-line-length
+	loadAPI: Promise<any>;
 	charts: any;
 	registerForm: FormGroup;
 	passwordMatch;
@@ -48,7 +49,101 @@ export class PublicDashboardComponent implements OnInit {
 		public widgetService: DatasourceWidgetService,
 		public datasourceDashboardService: DatasourceDashboardService,
 		private translate: TranslateService,
-	) { }
+	) {
+		this.loadAPI = new Promise((resolve) => {
+			this.loadJQUERY();
+			resolve(true);
+			this.loadJQUERYUI();
+			resolve(true);
+			this.loadGridStackJS();
+			resolve(true);
+			
+			
+		});
+		
+	 }
+
+
+	public loadJQUERYUI() {
+		var isFound = false;
+		var scripts = document.getElementsByTagName("script")
+		for (var i = 0; i < scripts.length; ++i) {
+			if (scripts[i].getAttribute('src') != null && scripts[i].getAttribute('src').includes("loader")) {
+				isFound = true;
+			}
+		}
+
+		if (!isFound) {
+			var dynamicScripts = ["//cdnjs.cloudflare.com/ajax/libs/gridstack.js/0.4.0/gridstack.jQueryUI.min.js"];
+			
+			for (var i = 0; i < dynamicScripts.length; i++) {
+				let node = document.createElement('script');
+				node.src = dynamicScripts[i];
+				node.type = 'text/javascript';
+				node.async = false;
+				node.charset = 'utf-8';
+				document.getElementsByTagName('head')[0].appendChild(node);
+			}
+			console.log("WE REACHED HERE NOW: JQUERY UI LOADED");
+
+		}
+	}
+
+	public loadJQUERY() {
+		var isFound = false;
+		var scripts = document.getElementsByTagName("script")
+		for (var i = 0; i < scripts.length; ++i) {
+			if (scripts[i].getAttribute('src') != null && scripts[i].getAttribute('src').includes("loader")) {
+				isFound = true;
+			}
+		}
+
+		if (!isFound) {
+			var dynamicScripts = ["https://code.jquery.com/jquery-3.4.1.min.js"];
+			for (var i = 0; i < dynamicScripts.length; i++) {
+				let node = document.createElement('script');
+				node.src = dynamicScripts[i];
+				node.type = 'text/javascript';
+				node.async = false;
+				node.charset = 'utf-8';
+				document.getElementsByTagName('head')[0].appendChild(node);
+			}
+			
+			console.log("WE REACHED HERE NOW JQUERY LOADED");
+
+		}
+	}
+
+	public loadGridStackJS() {
+		var isFound = false;
+		var scripts = document.getElementsByTagName("script")
+		for (var i = 0; i < scripts.length; ++i) {
+			if (scripts[i].getAttribute('src') != null && scripts[i].getAttribute('src').includes("loader")) {
+				isFound = true;
+			}
+		}
+
+		if (!isFound) {
+			var dynamicScripts = ["//cdnjs.cloudflare.com/ajax/libs/gridstack.js/0.4.0/	.min.js"];
+			
+			for (var i = 0; i < dynamicScripts.length; i++) {
+				let node = document.createElement('script');
+				node.src = dynamicScripts[i];
+				node.type = 'text/javascript';
+				node.async = false;
+				node.charset = 'utf-8';
+				document.getElementsByTagName('head')[0].appendChild(node);
+			}
+			console.log("WE REACHED HERE NOW GRID-STACK.JS Loaded");
+
+		}
+	}
+
+	
+
+
+
+
 
 	ngOnInit() {
 		console.log(this.charts);
@@ -67,8 +162,7 @@ export class PublicDashboardComponent implements OnInit {
 		this.initializeRegistrationForm();
 		this.initializeLoginForm();
 
-
-
+		
 	}
 
 	changeTab(vl) {
@@ -193,9 +287,10 @@ export class PublicDashboardComponent implements OnInit {
 
 
 	ngAfterViewInit() {
-		// this.charts.forEach(el => {
-		// 	this.addWidget(el);
-		// });
+		$(function () {
+			$('.grid-stack').gridstack();
+			console("GRID STACK INITIALIZED IN NGOnInit");
+		});
 	}
 
 	getLangDirection() {
