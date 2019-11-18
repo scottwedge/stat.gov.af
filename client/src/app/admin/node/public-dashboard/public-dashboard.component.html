@@ -16,7 +16,7 @@
             <button class="btn btn-waning" type="button" [disabled]="loading || !charts.length" data-toggle="tooltip"
               data-placement="top" [title]="'SAVE-DASHBOARD' | translate" (click)="checkUserLoggedIn()">
               <span class="btn-label" *ngIf="!loading">
-                <i class="fa fa-upload"></i>
+                <i class="fa fa-save"></i>
               </span>
               <i class="fa fa-spinner fa-spin" *ngIf="loading"></i>
             </button>
