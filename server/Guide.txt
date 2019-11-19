@@ -1,0 +1,33 @@
+
+sudo apt-get update
+
+NodeJs
+- sudo apt-get install nodejs
+- node -v
+- sudo apt-get install npm
+- npm -v
+
+
+Mongodb
+- sudo apt install -y mongodb
+- sudo systemctl status mongodb
+- mongo --eval 'db.runCommand({ connectionStatus: 1 })'
+- mongo
+- show dbs;
+- use kankor
+- db.dropDatabase()
+
+
+sudo mv server.zip /opt/
+
+- Uncompress the zip File
+$ sudo unzip server.zip
+
+- Add Supervisor config file and it should be placed at /etc/supervisor/conf.d/server.conf
+
+
+supervisorctl reread
+supervisorctl update
+
+
+https://blog.risingstack.com/operating-node-in-production/
