@@ -43,7 +43,7 @@
                     <ul class="dropdown-menu" *ngIf="globals.dashboardList.length">
                         <li><a href="#" [routerLink]="['/dashboard']">{{ 'HOME' | titlecase  | translate }}</a></li>
                         <li *ngFor="let dashboard of globals.dashboardList"><a href="#"
-                                [routerLink]="['/dashboard', dashboard.slug]"><span>{{ getTitleByLang(dashboard.name) | titlecase  | translate }}</span></a>
+                                [routerLink]="['/dashboard', dashboard.slug]"><span>{{ getTitleByLang(dashboard.slug) | titlecase  | translate }}</span></a>
                         </li>
                     </ul>
                 </li>

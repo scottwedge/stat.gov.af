@@ -61,7 +61,7 @@
 						<div class="item" *ngFor="let dashboard of globals.dashboardList">
 							<div class="col-md-2 card">
 									<a href="#" class="dataset-name"
-									[routerLink]="['/dashboard', dashboard.slug]">{{ getTitleByLang(dashboard.name) | titlecase  | translate }}</a>
+									[routerLink]="['/dashboard', dashboard.slug]">{{ getTitleByLang(dashboard.slug) | titlecase  | translate }}</a>
 									<div class="small m-t-xs">
 										<small class="text-muted"
 											*ngFor="let tag of dashboard.tags">{{ getTitleByLang(tag) | titlecase }}</small>

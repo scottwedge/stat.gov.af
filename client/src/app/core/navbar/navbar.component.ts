@@ -144,6 +144,7 @@ export class NavbarComponent implements OnInit {
 			}, 1000);
 
 		});
+
 	}
 
 	fetchAllDashboards() {
@@ -173,6 +174,8 @@ export class NavbarComponent implements OnInit {
 				});
 			}
 		});
+
+		console.log("HERE IS DashboardLIST VALUE:",this.globals.dashboardList);
 
 	}
 
