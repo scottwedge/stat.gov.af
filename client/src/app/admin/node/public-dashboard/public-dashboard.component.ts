@@ -54,11 +54,11 @@ export class PublicDashboardComponent implements OnInit {
 
 	ngOnInit() {
 
-		var options = {
-			cell_height: 80,
-			vertical_margin: 10
-		};
-		$('.grid-stack').gridstack(options);
+		// var options = {
+		// 	cell_height: 80,
+		// 	vertical_margin: 10
+		// };
+	
 
 		console.log(this.charts);
 		this.charts = [];
@@ -202,6 +202,17 @@ export class PublicDashboardComponent implements OnInit {
 
 
 	ngAfterViewInit() {
+
+		$('.grid-stack').gridstack({
+			// resizable: {
+			// 	handles: 'e, w'
+			// }
+			staticGrid: false,
+			disableDrag: false,
+			disableDrop: false,
+			auto: 'false',
+			// cellHeight: 'auto'
+		});
 		// this.charts.forEach(el => {
 		// 	this.addWidget(el);
 		// });

@@ -45,22 +45,14 @@
     <!-- end row -->
 
     
-
-    <div gridStack w="12" animate="true">
-      <div gridStackItem x="0" y="0" w="4" h="2">1</div>
-      <div gridStackItem x="4" y="0" w="4" h="4">2</div>
-      <div gridStackItem x="8" y="0" w="2" h="2" canResize="false" minWidth="2">
-          <span class="fa fa-hand-o-up"></span> Drag me!
-      </div>
-      <div gridStackItem x="10" y="0" w="2" h="2">4</div>
-      <div gridStackItem x="0" y="2" w="2" h="2">5</div>
-      <div gridStackItem x="2" y="2" w="2" h="4">6</div>
-      <div gridStackItem x="8" y="2" w="4" h="2">7</div>
-      <div gridStackItem x="0" y="4" w="2" h="2">8</div>
-      <div gridStackItem x="4" y="4" w="4" h="2">9</div>
-      <div gridStackItem x="8" y="4" w="2" h="2">10</div>
-      <div gridStackItem x="10" y="4" w="2" h="2">11</div>
-  </div>
+    <grid-stack class="grid-stack" [options]="options">
+      <grid-stack-item [option]="widget.Item" class="grid-stack-item"  >
+        Some Data 1
+      </grid-stack-item>
+      <grid-stack-item [option]="" class="grid-stack-item" >
+        Some Data 2
+      </grid-stack-item>
+    </grid-stack>
 
 
 
