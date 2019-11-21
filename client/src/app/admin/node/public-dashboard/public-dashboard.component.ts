@@ -50,15 +50,16 @@ export class PublicDashboardComponent implements OnInit {
 		private translate: TranslateService,
 	) {
 
+	 }
+
+	ngOnInit() {
+
 		var options = {
 			cell_height: 80,
 			vertical_margin: 10
 		};
 		$('.grid-stack').gridstack(options);
-		
-	 }
 
-	ngOnInit() {
 		console.log(this.charts);
 		this.charts = [];
 		this.dashboardName = '';
