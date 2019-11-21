@@ -28,6 +28,7 @@ export class PublicDashboardComponent implements OnInit {
 	@ViewChildren(GridStackItemComponent) items: QueryList<GridStackItemComponent>;
 	@ViewChild('gridStackMain', { static: false }) gridStackMain: ElementRef;
 	options: GridStackOptions = new GridStackOptions();
+	
 	widget1 = {
 	  x: 0,
 	  y: 0,
@@ -39,8 +40,11 @@ export class PublicDashboardComponent implements OnInit {
 	  x: 6,
 	  y: 0,
 	  height: 6,
-	  width: 6
+	  width: 6,
+	  resizable:true,
+	  draggable:true
 	};
+
 	gridStackEl;
 	// tslint:disable-next-line: max-line-length
 	charts: any;
@@ -59,7 +63,9 @@ export class PublicDashboardComponent implements OnInit {
 		public datasourceDashboardService: DatasourceDashboardService,
 		private translate: TranslateService,
 	) {
-
+		this.options.removable=true;
+		this.options.draggable=true;
+		this.options.resizable=true;
 	 }
 
 	ngOnInit() {
@@ -293,7 +299,6 @@ export class PublicDashboardComponent implements OnInit {
 		}, err => {
 			console.log('err: ', err);
 		});
-
 	}
 
 	resetCharts() {
