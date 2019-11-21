@@ -45,12 +45,21 @@
     <!-- end row -->
 
 
-    <gridStack w="12" animate="true">
-        <div gridStackItem
-          [x]="0" [y]="0" [h]="3" [w]="3" [customid]="10">
-          <h1>Hello</h1>
+    
+
+
+
+      
+      <gridStack w="12" h="120" animate="true" allowEditing="true"  >
+                   
+          <div gridStackItem style="border: 2px solid red;" *ngFor="let chart of charts"
+          [x]="0" [y]="0" [h]="3" [w]="3" [content]="stringify(chart)" >
+          {{content}}
         </div>
-      </gridStack>
+     
+    </gridStack>
+
+   
 
     <hr>
     <div class="all-charts">

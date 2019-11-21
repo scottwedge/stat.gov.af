@@ -301,6 +301,16 @@ export class PublicDashboardComponent implements OnInit {
 		});
 	}
 
+	stringify(chart){
+		return JSON.stringify(chart);
+	}
+
+	parse (chart){
+		console.log("test" , chart);
+		
+		return JSON.parse(chart);
+	}
+
 	resetCharts() {
 		Swal({
 			title: this.translate.instant('RESET-ALL-ALERT'),
