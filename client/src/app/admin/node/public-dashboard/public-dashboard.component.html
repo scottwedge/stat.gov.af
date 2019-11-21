@@ -44,16 +44,17 @@
     </div>
     <!-- end row -->
 
-    
-    <grid-stack class="grid-stack" [options]="options">
-      <grid-stack-item [option]="widget.Item" class="grid-stack-item"  >
-        Some Data 1
-      </grid-stack-item>
-      <grid-stack-item [option]="" class="grid-stack-item" >
-        Some Data 2
-      </grid-stack-item>
-    </grid-stack>
-
+<!-- You can now use your library component in app.component.html -->
+<grid-stack class="grid-stack" [options]="options">
+    <grid-stack-item [option]="widget1" class="grid-stack-item" >
+      <div style="background-color: aqua;" >
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolorem nam sunt repellendus, aut blanditiis nihil? Accusamus error nam ullam eaque, nobis exercitationem aliquid vero recusandae dicta distinctio repellat, cupiditate quibusdam.
+      </div>
+    </grid-stack-item>
+    <grid-stack-item [option]="widget2" class="grid-stack-item" >
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Exercitationem rerum perferendis consequuntur totam explicabo asperiores reprehenderit cum. Fugit reprehenderit ratione eum. Magnam unde adipisci similique dignissimos saepe, sequi ex provident?
+    </grid-stack-item>
+</grid-stack>
 
 
     <hr>

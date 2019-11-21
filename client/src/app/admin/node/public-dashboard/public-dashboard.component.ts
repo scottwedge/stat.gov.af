@@ -27,10 +27,20 @@ export class PublicDashboardComponent implements OnInit {
 
 	@ViewChildren(GridStackItemComponent) items: QueryList<GridStackItemComponent>;
 	@ViewChild('gridStackMain', { static: false }) gridStackMain: ElementRef;
-	area: GridStackOptions = new GridStackOptions();
-	widgets: GridStackItem[] = [];
-
-	options;
+	options: GridStackOptions = new GridStackOptions();
+	widget1 = {
+	  x: 0,
+	  y: 0,
+	  height: 6,
+	  width: 6
+	};
+  
+	widget2 = {
+	  x: 6,
+	  y: 0,
+	  height: 6,
+	  width: 6
+	};
 	gridStackEl;
 	// tslint:disable-next-line: max-line-length
 	charts: any;
