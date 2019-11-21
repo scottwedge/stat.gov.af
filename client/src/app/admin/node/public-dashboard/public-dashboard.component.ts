@@ -25,10 +25,10 @@ import Swal from 'sweetalert2';
 export class PublicDashboardComponent implements OnInit {
 
 
-	// @ViewChildren(GridStackItemComponent) items: QueryList<GridStackItemComponent>;
-	// @ViewChild('gridStackMain', { static: false }) gridStackMain: ElementRef;
-	// area: GridStackOptions = new GridStackOptions();
-	// widgets: GridStackItem[] = [];
+	@ViewChildren(GridStackItemComponent) items: QueryList<GridStackItemComponent>;
+	@ViewChild('gridStackMain', { static: false }) gridStackMain: ElementRef;
+	area: GridStackOptions = new GridStackOptions();
+	widgets: GridStackItem[] = [];
 
 	options;
 	gridStackEl;
@@ -48,7 +48,15 @@ export class PublicDashboardComponent implements OnInit {
 		public widgetService: DatasourceWidgetService,
 		public datasourceDashboardService: DatasourceDashboardService,
 		private translate: TranslateService,
-	) { }
+	) {
+
+		var options = {
+			cell_height: 80,
+			vertical_margin: 10
+		};
+		$('.grid-stack').gridstack(options);
+		
+	 }
 
 	ngOnInit() {
 		console.log(this.charts);

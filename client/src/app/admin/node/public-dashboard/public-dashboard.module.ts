@@ -14,6 +14,7 @@ PlotlyModule.plotlyjs = PlotlyJS;
 
 
 
+
 @NgModule({
 	imports: [
 		CommonModule,
