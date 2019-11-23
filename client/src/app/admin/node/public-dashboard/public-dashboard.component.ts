@@ -305,6 +305,32 @@ export class PublicDashboardComponent implements OnInit {
 		return JSON.stringify(chart);
 	}
 
+	generatePlot(chart){
+
+		console.log("Init data", chart);
+		
+		const plt = `
+
+			<div class="card">
+              <span class="btn-label close pull-right" (click)="removeChart(${chart.id})"
+              data-toggle="tooltip" data-placement="top" [title]="'REMOVE' | translate">
+                <i class="fa fa-close"></i>
+              </span>
+              <div class="content">
+                <plotly-plot [data]="${chart.filteredData}" [config]="${chart.config}" [layout]="${chart.layout}"
+                  [useResizeHandler]="true" [style]="{position: 'relative', width: '100%', height: '100%'}"
+                  #plotlyChartContainer>
+                </plotly-plot>
+              </div>
+            </div>
+		
+		`;
+
+		console.log("Plot", plt);
+		
+		return plt;
+	}
+
 	parse (chart){
 		console.log("test" , chart);
 		

@@ -44,15 +44,15 @@
     </div>
     <!-- end row -->
 
-      
+<!--       
       <gridStack w="12" h="120" animate="true" allowEditing="true"  >
                    
           <div gridStackItem style="border: 2px solid red;" *ngFor="let chart of charts"
-          [x]="0" [y]="0" [h]="3" [w]="3" [content]="stringify(chart)" >
-          {{content}}
+          [x]="0" [y]="0" [h]="3" [w]="3" [content]="generatePlot(chart)" >
+              {{content}}
         </div>
     
-    </gridStack>
+    </gridStack> -->
 
    
 
@@ -62,21 +62,10 @@
         <div class="row">
 
 
-            <gridStack w="12" h="120" animate="true" allowEditing="true"   *ngFor="let chart of charts">
-                   
-                <div class="card" >
-                    <span class="btn-label close pull-right" (click)="removeChart(chart.id)"
-                    data-toggle="tooltip" data-placement="top" [title]="'REMOVE' | translate">
-                      <i class="fa fa-close"></i>
-                    </span>
-                    <div class="content">
-                      <plotly-plot [data]="chart.data" [config]="chart.config" [layout]="chart.layout"
-                        [useResizeHandler]="true" [style]="{position: 'relative', width: '100%', height: '100%'}"
-                        #plotlyChartContainer>
-                      </plotly-plot>
-                    </div>
-                  </div>
-          
+            <gridStack w="12" h="120" animate="true">
+              <div  *ngFor="let chart of charts" gridStackItem [content]="generatePlot(chart)">
+                  {{content}}
+              </div>
           </gridStack>
       
           
