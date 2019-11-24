@@ -48,7 +48,6 @@ import {
 import { AppRoutes } from './app.routing';
 import { AppComponent } from './app.component';
 
-import { GridStackModule } from 'ng4-gridstack';
 import { CookieService } from 'ngx-cookie-service';
 
 import { ShareModule } from '@ngx-share/core';
@@ -115,7 +114,6 @@ PlotlyModule.plotlyjs = PlotlyJS;
 		FixedPluginModule,
 		LoadingBarRouterModule,
 		LoadingBarHttpClientModule,
-		GridStackModule,
 		LoadingBarModule.forRoot(),
 
 		PerfectScrollbarModule,

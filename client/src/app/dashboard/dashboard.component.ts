@@ -8,7 +8,6 @@ import { WidgetComponent } from './widget/widget.component';
 import { Visualization } from '../models/visualization';
 import { debounce } from 'lodash';
 import { ActivatedRoute } from '@angular/router';
-import { GridStackOptions, GridStackComponent } from 'ng4-gridstack';
 import { Globals } from '../core/_helpers/globals';
 import { TranslateService } from '@ngx-translate/core';
 import { DatasourceQueryService } from 'app/services/datasource.query.service';
@@ -30,7 +29,6 @@ export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
 	@ViewChild('grid_stack', { static: false }) gridStack: ElementRef;
 	@ViewChild('grid_stack_item', { static: false }) gridStackItem: ElementRef;
 
-	area: GridStackOptions = new GridStackOptions();
 	// public dashboards: Dashboard[] = [
 	//   new Dashboard(1, "Dashbaord 001"),
 	//   new Dashboard(2, "Product 002"),
@@ -94,19 +92,6 @@ export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
 		});
 
 		console.log('Slug : ' + this.slug);
-		this.area.cellHeight = dashboardGridOptions.rowHeight - dashboardGridOptions.margins + 'px';
-		this.area.verticalMargin = dashboardGridOptions.margins;
-		this.area.auto = false;
-		this.area.rtl = 'auto';
-		this.area.disableOneColumnMode = true;
-		// this.area.rtl = this.globals.options.dir;
-
-		// this.getDashboard(this.slug);
-
-		// this.handleResize = debounce(this.batchUpdateWidgets, 50);
-
-		// this.updateGridStackAttributes(this.gridStack);
-
 
 		this.datasourceQueryService.loadQueries().subscribe(data => {
 			console.log("Datasource Data", data);

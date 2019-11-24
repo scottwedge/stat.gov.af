@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 // import { GridStackModule } from 'ng4-gridstack';
-import { GridStackModule } from 'ng2-gridstack'
 
 import { PublicDashboardRoutes } from './public-dashboard.routing';
 import { JwBootstrapSwitchNg2Module } from 'jw-bootstrap-switch-ng2';

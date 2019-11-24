@@ -4,10 +4,9 @@ import {
 	GridsterComponent,
 	IGridsterOptions,
 	IGridsterDraggableOptions
-  } from "angular2gridster";
+} from "angular2gridster";
 
 declare var $: any;
-import { GridStackItem, GridStackOptions, GridStackItemComponent, GridStackComponent } from 'ng4-gridstack'
 import { Dashboard, dashboardGridOptions } from '../../../models/dashboard';
 import { Globals } from 'app/core';
 import { AuthService } from 'app/services/auth.service';
