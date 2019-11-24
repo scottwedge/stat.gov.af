@@ -44,15 +44,46 @@
     </div>
     <!-- end row -->
 
-<!--       
-      <gridStack w="12" h="120" animate="true" allowEditing="true"  >
-                   
-          <div gridStackItem style="border: 2px solid red;" *ngFor="let chart of charts"
-          [x]="0" [y]="0" [h]="3" [w]="3" [content]="generatePlot(chart)" >
-              {{content}}
+  <ngx-gridster [options]="gridsterOptions" [draggableOptions]="gridsterDraggableOptions" (reflow)="onReflow($event)" (optionsChange)="optionsChange($event)"
+    #gridster1 class="dashboard">
+
+     <ngx-gridster-item *ngFor="let widget of widgets; let indx = index" #itemComp [options]="itemOptions" [dragAndDrop]="widget.dragAndDrop"
+      [resizable]="widget.resizable" [(x)]="widget.x" [(y)]="widget.y" [(xSm)]="widget.xSm" [(ySm)]="widget.ySm" [(xMd)]="widget.xMd"
+      [(yMd)]="widget.yMd" [(xLg)]="widget.xLg" [(yLg)]="widget.yLg" [(xXl)]="widget.xXl" [(yXl)]="widget.yXl" [(w)]="widget.w"
+      [(h)]="widget.h" [(wSm)]="widget.wSm" [(hSm)]="widget.hSm" [(wMd)]="widget.wMd" [(hMd)]="widget.hMd" [(wLg)]="widget.wLg"
+      [(hLg)]="widget.hLg" [(wXl)]="widget.wXl" [(hXl)]="widget.hXl" (change)="itemChange($event, gridster1)">
+ 
+       <div class="panel-heading">
+         <h5 class="panel-title">{{ widget.title }}</h5>
+       </div>
+ 
+       <div class="panel-body">
+
+        <div class="content">
+            <plotly-plot [data]="widget.content.data" [config]="widget.content.config" [layout]="widget.content.layout"
+            [useResizeHandler]="true"  [style]="{position: 'relative', width: '{{widget.}}', height: '100%'}"
+            #plotlyChartContainer>
+          </plotly-plot>
         </div>
-    
-    </gridStack> -->
+
+
+         <!-- <p>
+           Position: {{itemComp?.item?.x}} x {{itemComp?.item?.y}}<br> Size: {{itemComp?.item?.w}} x {{itemComp?.item?.h}}<br>
+         </p>
+         <p>
+           <label>
+              <input type="checkbox" [(ngModel)]="widget.dragAndDrop" value="true"> Draggable
+             </label>
+           <label>
+              <input type="checkbox" [(ngModel)]="widget.resizable" value="true"> Resizable
+            </label>
+         </p> -->
+
+       </div>
+ 
+     </ngx-gridster-item>
+ 
+   </ngx-gridster>
 
    
 
@@ -62,14 +93,14 @@
         <div class="row">
 
 
-            <gridStack w="12" h="120" animate="true">
+            <!-- <gridStack w="12" h="120" animate="true">
               <div  *ngFor="let chart of charts" gridStackItem [content]="generatePlot(chart)">
                   {{content}}
               </div>
           </gridStack>
-      
+       -->
           
-          <!-- <div class="col-md-6 col-sm-12" *ngFor="let chart of charts">
+          <div class="col-md-6 col-sm-12" *ngFor="let chart of charts">
             <div class="card">
               <span class="btn-label close pull-right" (click)="removeChart(chart.id)"
               data-toggle="tooltip" data-placement="top" [title]="'REMOVE' | translate">
@@ -82,7 +113,7 @@
                 </plotly-plot>
               </div>
             </div>
-          </div> -->
+          </div>
         </div>
       </div>
       <ng-template #nodata>

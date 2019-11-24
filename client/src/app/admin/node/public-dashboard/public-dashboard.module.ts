@@ -10,11 +10,9 @@ import { PublicDashboardRoutes } from './public-dashboard.routing';
 import { JwBootstrapSwitchNg2Module } from 'jw-bootstrap-switch-ng2';
 import { PublicDashboardComponent } from './public-dashboard.component';
 import * as PlotlyJS from 'plotly.js/dist/plotly.js';
-import { PlotlyModule } from 'angular-plotly.js';
-import { GridStackItemDirective } from 'app/services/directive/grid-stack-item-directive';
-PlotlyModule.plotlyjs = PlotlyJS;
+import { PlotlyModule } from 'angular-plotly.js';PlotlyModule.plotlyjs = PlotlyJS;
 
-
+import { GridsterModule } from 'angular2gridster';
 
 
 @NgModule({
@@ -23,9 +21,9 @@ PlotlyModule.plotlyjs = PlotlyJS;
 		TranslateModule,
 		ReactiveFormsModule,
 		JwBootstrapSwitchNg2Module,
-		GridStackModule,
 		PlotlyModule,
 		FormsModule,
+		GridsterModule.forRoot(), // .forRoot() is required since version v4+
 		RouterModule.forChild(PublicDashboardRoutes),
 	],
 	entryComponents: [
@@ -33,7 +31,6 @@ PlotlyModule.plotlyjs = PlotlyJS;
 	declarations: [
 		PublicDashboardComponent,
 		// AddWidgetComponent,
-		GridStackItemDirective,
 	]
 })
 export class PublicDashboardModule { }

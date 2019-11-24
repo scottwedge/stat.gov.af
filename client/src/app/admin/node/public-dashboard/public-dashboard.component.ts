@@ -1,5 +1,10 @@
-import { Component, OnInit, ViewChildren, QueryList, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList, ViewChild, ChangeDetectorRef, ElementRef, ViewEncapsulation } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators, FormArray } from '@angular/forms';
+import {
+	GridsterComponent,
+	IGridsterOptions,
+	IGridsterDraggableOptions
+  } from "angular2gridster";
 
 declare var $: any;
 import { GridStackItem, GridStackOptions, GridStackItemComponent, GridStackComponent } from 'ng4-gridstack'
@@ -20,32 +25,106 @@ import Swal from 'sweetalert2';
 @Component({
 	selector: 'app-public-dashboard',
 	templateUrl: './public-dashboard.component.html',
-	styleUrls: ['./public-dashboard.component.scss']
+	styleUrls: ['./public-dashboard.component.scss'],
+	encapsulation: ViewEncapsulation.None
 })
 export class PublicDashboardComponent implements OnInit {
 
 
-	@ViewChildren(GridStackItemComponent) items: QueryList<GridStackItemComponent>;
-	@ViewChild('gridStackMain', { static: false }) gridStackMain: ElementRef;
-	options: GridStackOptions = new GridStackOptions();
+	static X_PROPERTY_MAP: any = {
+		sm: "xSm",
+		md: "xMd",
+		lg: "xLg",
+		xl: "xXl"
+	  };
 	
-	widget1 = {
-	  x: 0,
-	  y: 0,
-	  height: 6,
-	  width: 6
-	};
-  
-	widget2 = {
-	  x: 6,
-	  y: 0,
-	  height: 6,
-	  width: 6,
-	  resizable:true,
-	  draggable:true
-	};
+	  static Y_PROPERTY_MAP: any = {
+		sm: "ySm",
+		md: "yMd",
+		lg: "yLg",
+		xl: "yXl"
+	  };
+	
+	  static W_PROPERTY_MAP: any = {
+		sm: "wSm",
+		md: "wMd",
+		lg: "wLg",
+		xl: "wXl"
+	  };
+	
+	  static H_PROPERTY_MAP: any = {
+		sm: "hSm",
+		md: "hMd",
+		lg: "hLg",
+		xl: "hXl"
+	  };
+	  @ViewChild(GridsterComponent, {static:true}) gridster: GridsterComponent;
+	  itemOptions = {
+		maxWidth: 3,
+		maxHeight: 4
+	  };
+	  gridsterOptions: IGridsterOptions = {
+		// core configuration is default one - for smallest view. It has hidden minWidth: 0.
+		lanes: 2, // amount of lanes (cells) in the grid
+		direction: "vertical", // floating top - vertical, left - horizontal
+		floating: true,
+		dragAndDrop: true, // enable/disable drag and drop for all items in grid
+		resizable: true, // enable/disable resizing by drag and drop for all items in grid
+		resizeHandles: {
+		  s: true,
+		  e: true,
+		  se: true
+		},
+		widthHeightRatio: 1, // proportion between item width and height
+		lines: {
+		  visible: true,
+		  color: "#afafaf",
+		  width: 2
+		},
+		shrink: true,
+		useCSSTransforms: true,
+		responsiveView: true, // turn on adopting items sizes on window resize and enable responsiveOptions
+		responsiveDebounce: 500, // window resize debounce time
+		responsiveSizes: true,
+		// List of different gridster configurations for different breakpoints.
+		// Each breakpoint is defined by name stored in "breakpoint" property. There is fixed set of breakpoints
+		// available to use with default minWidth assign to each.
+		// - sm: 576 - Small devices
+		// - md: 768 - Medium devices
+		// - lg: 992 - Large devices
+		// - xl: 1200 - Extra large
+		// MinWidth for each breakpoint can be overwritten like it's visible below.
+		// ResponsiveOptions can overwrite default configuration with any option available.
+		responsiveOptions: [
+		  {
+			breakpoint: "sm",
+			// minWidth: 480,
+			lanes: 3
+		  },
+		  {
+			breakpoint: "md",
+			minWidth: 768,
+			lanes: 4
+		  },
+		  {
+			breakpoint: "lg",
+			minWidth: 1250,
+			lanes: 6
+		  },
+		  {
+			breakpoint: "xl",
+			minWidth: 1800,
+			lanes: 8
+		  }
+		]
+	  };
+	  gridsterDraggableOptions: IGridsterDraggableOptions = {
+		handlerClass: "panel-heading"
+	  };
+	  title = "Angular2Gridster";
+	  widgetsCopy = [];
+	  widgets: Array<any> = [];
 
-	gridStackEl;
 	// tslint:disable-next-line: max-line-length
 	charts: any;
 	registerForm: FormGroup;
@@ -63,20 +142,15 @@ export class PublicDashboardComponent implements OnInit {
 		public datasourceDashboardService: DatasourceDashboardService,
 		private translate: TranslateService,
 	) {
-		this.options.removable=true;
-		this.options.draggable=true;
-		this.options.resizable=true;
 	 }
 
 	ngOnInit() {
+		
 
-		// var options = {
-		// 	cell_height: 80,
-		// 	vertical_margin: 10
-		// };
+	
 	
 
-		console.log(this.charts);
+	
 		this.charts = [];
 		this.dashboardName = '';
 		// this.area.cellHeight = dashboardGridOptions.rowHeight - dashboardGridOptions.margins + 'px';
@@ -92,6 +166,10 @@ export class PublicDashboardComponent implements OnInit {
 		this.initializeRegistrationForm();
 		this.initializeLoginForm();
 
+		console.log("chart" , this.charts);
+
+		this.setWidgets();
+		this.widgetsCopy = this.widgets.map(widget => ({ ...widget }));
 
 
 	}
@@ -100,6 +178,30 @@ export class PublicDashboardComponent implements OnInit {
 		$('a[href="#' + vl + '"]').tab('show');
 	}
 
+	setWidgets()
+	{
+		this.charts.forEach(element => {
+			const widget = {
+				x: 0,
+				y: 0,
+				w: 1,
+				h: 2,
+				wSm: 1,
+				hSm: 1,
+				wMd: 1,
+				hMd: 2,
+				wLg: 1,
+				hLg: 1,
+				wXl: 2,
+				hXl: 2,
+				dragAndDrop: true,
+				resizable: true,
+				title: element.data.name,
+				content: element
+			  };
+			this.widgets.push(widget);
+		});
+	}
 
 	checkPasswords(group: FormGroup) { // here we have the 'passwords' group
 		const pass = group.controls.password.value;
@@ -218,20 +320,6 @@ export class PublicDashboardComponent implements OnInit {
 
 
 	ngAfterViewInit() {
-
-		$('.grid-stack').gridstack({
-			// resizable: {
-			// 	handles: 'e, w'
-			// }
-			staticGrid: false,
-			disableDrag: false,
-			disableDrop: false,
-			auto: 'false',
-			// cellHeight: 'auto'
-		});
-		// this.charts.forEach(el => {
-		// 	this.addWidget(el);
-		// });
 	}
 
 	getLangDirection() {
@@ -301,42 +389,6 @@ export class PublicDashboardComponent implements OnInit {
 		});
 	}
 
-	stringify(chart){
-		return JSON.stringify(chart);
-	}
-
-	generatePlot(chart){
-
-		console.log("Init data", chart);
-		
-		const plt = `
-
-			<div class="card">
-              <span class="btn-label close pull-right" (click)="removeChart(${chart.id})"
-              data-toggle="tooltip" data-placement="top" [title]="'REMOVE' | translate">
-                <i class="fa fa-close"></i>
-              </span>
-              <div class="content">
-                <plotly-plot [data]="${chart.filteredData}" [config]="${chart.config}" [layout]="${chart.layout}"
-                  [useResizeHandler]="true" [style]="{position: 'relative', width: '100%', height: '100%'}"
-                  #plotlyChartContainer>
-                </plotly-plot>
-              </div>
-            </div>
-		
-		`;
-
-		console.log("Plot", plt);
-		
-		return plt;
-	}
-
-	parse (chart){
-		console.log("test" , chart);
-		
-		return JSON.parse(chart);
-	}
-
 	resetCharts() {
 		Swal({
 			title: this.translate.instant('RESET-ALL-ALERT'),
@@ -371,5 +423,170 @@ export class PublicDashboardComponent implements OnInit {
 		localStorage.setItem('charts', JSON.stringify(this.charts));
 	}
 
+
+	/////////////////////Gridster//////////////////////////////
+
+	onReflow(event) {
+		console.log("onReflow", event);
+	  }
+	
+	  removeLine(gridster: GridsterComponent) {
+		gridster.setOption("lanes", --this.gridsterOptions.lanes).reload();
+	  }
+	
+	  getTitle() {
+		return this.title;
+	  }
+	
+	  addLine(gridster: GridsterComponent) {
+		gridster.setOption("lanes", ++this.gridsterOptions.lanes).reload();
+	  }
+	
+	  setWidth(widget: any, size: number, e: MouseEvent, gridster) {
+		e.stopPropagation();
+		e.preventDefault();
+		if (size < 1) {
+		  size = 1;
+		}
+		widget.w = size;
+	
+		gridster.reload();
+	
+		return false;
+	  }
+	
+	  setHeight(widget: any, size: number, e: MouseEvent, gridster) {
+		e.stopPropagation();
+		e.preventDefault();
+		if (size < 1) {
+		  size = 1;
+		}
+		widget.h = size;
+	
+		gridster.reload();
+	
+		return false;
+	  }
+	
+	  optionsChange(options: IGridsterOptions) {
+		this.gridsterOptions = options;
+		console.log("options change:", options);
+	  }
+	
+	  swap() {
+		this.widgets[0].x = 3;
+		this.widgets[3].x = 0;
+	  }
+	
+	  addWidgetFromDrag(gridster: GridsterComponent, event: any) {
+		const item = event.item;
+		const breakpoint = gridster.options.breakpoint;
+		const widget = {
+		  dragAndDrop: true,
+		  resizable: true,
+		  title: "New widget"
+		};
+	
+		widget[PublicDashboardComponent.W_PROPERTY_MAP[breakpoint] || "w"] = item.w;
+		widget[PublicDashboardComponent.H_PROPERTY_MAP[breakpoint] || "h"] = item.h;
+		widget[PublicDashboardComponent.X_PROPERTY_MAP[breakpoint] || "x"] = item.x;
+		widget[PublicDashboardComponent.Y_PROPERTY_MAP[breakpoint] || "y"] = item.y;
+	
+		for (const rwdProp of [
+		  "wSm",
+		  "hSm",
+		  "wMd",
+		  "hMd",
+		  "wLg",
+		  "hLg",
+		  "wXl",
+		  "hXl"
+		]) {
+		  if (event.item.itemPrototype.hasOwnProperty(rwdProp)) {
+			widget[rwdProp] = event.item.itemPrototype[rwdProp];
+		  }
+		}
+	
+		this.widgets.push(widget);
+	
+		console.log("add widget from drag to:", gridster);
+	  }
+	
+	  over(event) {
+		const size = event.item.calculateSize(event.gridster);
+	
+		event.item.itemPrototype.$element.querySelector(
+		  ".gridster-item-inner"
+		).style.width =
+		  size.width + "px";
+		event.item.itemPrototype.$element.querySelector(
+		  ".gridster-item-inner"
+		).style.height =
+		  size.height + "px";
+		event.item.itemPrototype.$element.classList.add("is-over");
+	  }
+	
+	  out(event) {
+		event.item.itemPrototype.$element.querySelector(
+		  ".gridster-item-inner"
+		).style.width =
+		  "";
+		event.item.itemPrototype.$element.querySelector(
+		  ".gridster-item-inner"
+		).style.height =
+		  "";
+		event.item.itemPrototype.$element.classList.remove("is-over");
+	  }
+	
+	  addWidgetWithoutData() {
+		this.widgets.push({
+		  title: "Basic form inputs X",
+		  dragAndDrop: true,
+		  resizable: true,
+		  content:
+			"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et " +
+			"dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea " +
+			"commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla " +
+			"pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est " +
+			"laborum."
+		});
+	  }
+	
+	  addWidget(gridster: GridsterComponent) {
+		this.widgets.push({
+		  x: 4,
+		  y: 0,
+		  w: 1,
+		  h: 1,
+		  dragAndDrop: true,
+		  resizable: true,
+		  title: "Basic form inputs 5",
+		  content:
+			"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et " +
+			"dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea " +
+			"commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla " +
+			"pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est " +
+			"laborum."
+		});
+		console.log("widget push", this.widgets[this.widgets.length - 1]);
+	  }
+	
+	  remove($event, index: number, gridster: GridsterComponent) {
+		$event.preventDefault();
+		this.widgets.splice(index, 1);
+		console.log("widget remove", index);
+	  }
+	
+	  removeAllWidgets() {
+		this.widgets = [];
+	  }
+	
+	  itemChange($event: any, gridster) {
+		console.log("item change", $event);
+	  }
+	
+	  resetWidgets() {
+		this.widgets = this.widgetsCopy.map(widget => ({ ...widget }));
+	  }
 
 }
