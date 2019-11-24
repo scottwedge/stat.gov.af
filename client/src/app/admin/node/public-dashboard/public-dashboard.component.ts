@@ -17,13 +17,26 @@ import Swal from 'sweetalert2';
 // import 'jquery-ui/ui/widgets/droppable';
 // import 'jquery-ui/ui/widgets/resizable';
 
+
+
 @Component({
 	selector: 'app-public-dashboard',
 	templateUrl: './public-dashboard.component.html',
 	styleUrls: ['./public-dashboard.component.scss']
 })
 export class PublicDashboardComponent implements OnInit {
+	@ViewChildren(GridStackItemComponent) items: QueryList<GridStackItemComponent>;
+    @ViewChild('gridStackMain', { static: false }) gridStackMain: GridStackComponent;
+	area: GridStackOptions = new GridStackOptions();
+    widgets: GridStackItem[] = [];
 
+
+
+
+
+
+	@ViewChild('grid_stack', { static: false }) gridStack: ElementRef;
+	@ViewChild('grid_stack_item', { static: false }) gridStackItem: ElementRef;
 
 	// @ViewChildren(GridStackItemComponent) items: QueryList<GridStackItemComponent>;
 	// @ViewChild('gridStackMain', { static: false }) gridStackMain: ElementRef;
@@ -66,9 +79,25 @@ export class PublicDashboardComponent implements OnInit {
 
 		this.initializeRegistrationForm();
 		this.initializeLoginForm();
+		console.log(this.charts);
 
+		for (const chart of this.charts) {
+			this.addWidget(chart);
+		}
+		
+	}
 
-
+	addWidget(chart) {
+		var widget = new GridStackItem();
+      
+		widget.width = chart.gridstack.sizeX;
+		widget.height = chart.gridstack.sizeY;
+		widget.x = chart.gridstack.row;
+		widget.y = chart.gridstack.col;
+		this.widgets.push(widget);
+		this.cd.detectChanges();
+		var arr = this.items.toArray();
+		this.gridStackMain.AddWidget(arr[this.items.length - 1]);
 	}
 
 	changeTab(vl) {
