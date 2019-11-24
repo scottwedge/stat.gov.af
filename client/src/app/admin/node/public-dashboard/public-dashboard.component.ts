@@ -196,7 +196,8 @@ export class PublicDashboardComponent implements OnInit {
 				dragAndDrop: true,
 				resizable: true,
 				title: element.data.name,
-				content: element
+				content: element,
+				style:"position: 'relative', width: '100%', height: '100%'",
 			  };
 			this.widgets.push(widget);
 		});
