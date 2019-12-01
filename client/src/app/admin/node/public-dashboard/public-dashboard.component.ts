@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChildren, QueryList, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormBuilder, Validators, FormArray } from '@angular/forms';
 
 declare var $: any;
@@ -13,47 +14,24 @@ import { TranslateService } from '@ngx-translate/core';
 import Swal from 'sweetalert2';
 
 
-// import 'jquery-ui/ui/widgets/draggable';
-// import 'jquery-ui/ui/widgets/droppable';
-// import 'jquery-ui/ui/widgets/resizable';
-
-
-
 @Component({
 	selector: 'app-public-dashboard',
 	templateUrl: './public-dashboard.component.html',
 	styleUrls: ['./public-dashboard.component.scss']
 })
 export class PublicDashboardComponent implements OnInit {
-	@ViewChildren(GridStackItemComponent) items: QueryList<GridStackItemComponent>;
-    @ViewChild('gridStackMain', { static: false }) gridStackMain: GridStackComponent;
-	area: GridStackOptions = new GridStackOptions();
-
-    widgets: GridStackItem[] = [];
-
-
-
-
-
-
-	@ViewChild('grid_stack', { static: false }) gridStack: ElementRef;
-	@ViewChild('grid_stack_item', { static: false }) gridStackItem: ElementRef;
-
-	// @ViewChildren(GridStackItemComponent) items: QueryList<GridStackItemComponent>;
-	// @ViewChild('gridStackMain', { static: false }) gridStackMain: ElementRef;
-	// area: GridStackOptions = new GridStackOptions();
-	// widgets: GridStackItem[] = [];
 
 	options;
 	gridStackEl;
-	// tslint:disable-next-line: max-line-length
 	charts: any;
 	registerForm: FormGroup;
 	passwordMatch;
 	dashboardName;
 	loginForm: FormGroup;
 	isLoading: boolean;
+	showGrid = false;
 	widgetIds;
+	dashboardId: any;
 	constructor(
 		private cd: ChangeDetectorRef,
 		public globals: Globals,
@@ -62,62 +40,26 @@ export class PublicDashboardComponent implements OnInit {
 		public widgetService: DatasourceWidgetService,
 		public datasourceDashboardService: DatasourceDashboardService,
 		private translate: TranslateService,
-	) {
-		this.area.resizable=true;
-		this.area.draggable=true;
-		this.area.animate=true;
-		this.area.acceptWidgets=true;
-		this.area.alwaysShowResizeHandle=true;
-		this.area.width=400;
-		this.area.placeholderText="My Widget";
-		this.area.ddPlugin=true;
-		this.area.float=true;
-		this.area.disableOneColumnMode=true;
-		this.area.staticGrid=true;
-		this.area.verticalMargin=0;
-	 }
+		private router: Router
+	) { }
 
 	ngOnInit() {
 
-		
 
-		
 		console.log(this.charts);
 		this.charts = [];
 		this.dashboardName = '';
-		// this.area.cellHeight = dashboardGridOptions.rowHeight - dashboardGridOptions.margins + 'px';
-		// this.area.verticalMargin = dashboardGridOptions.margins;
-		// this.area.auto = false;
-		// this.area.rtl = 'auto';
-		// this.area.disableOneColumnMode = true;
 
-		// const gsEL: any = this.gridStackMain;
-		// this.gridStackEl = gsEL.el.nativeElement;
 		this.fetchDataFromLocalStorage();
+
 
 		this.initializeRegistrationForm();
 		this.initializeLoginForm();
 		console.log(this.charts);
 
-		for (const chart of this.charts) {
-			this.addWidget(chart);
-		}
-		
+
 	}
 
-
-	addWidget(chart) {
-		var widget = new GridStackItem();
-      
-		widget.width = chart.gridstack.sizeX;
-		widget.height = chart.gridstack.sizeY;
-		widget.x = chart.gridstack.row;
-		widget.y = chart.gridstack.col;
-		this.widgets.push(widget);
-		this.cd.detectChanges();
-		var arr = this.items.toArray();
-		this.gridStackMain.AddWidget(arr[this.items.length - 1]);
-	}
 
 	changeTab(vl) {
 		$('a[href="#' + vl + '"]').tab('show');
@@ -239,112 +181,111 @@ export class PublicDashboardComponent implements OnInit {
 		$('#home').tab('show');
 	}
 
+	saveNewGridAttributes(elem) {
+
+		const chartId = $(elem).attr('id');
+		console.log('charId: ', chartId);
+		this.charts.map(chart => {
+			if (chart.id === Number(chartId)) {
+				console.log('this id matches', chartId);
+				console.log($(elem).attr('data-gs-x'));
+				console.log('Element is : ', elem);
+
+				chart.gridstack.col = Number($(elem).attr('data-gs-x'));
+				chart.gridstack.row = Number($(elem).attr('data-gs-y'));
+				chart.gridstack.sizeX = Number($(elem).attr('data-gs-width'));
+				chart.gridstack.sizeY = $(elem).attr('data-gs-height');
+				chart.saved = false;
+			}
+
+			return chart;
+		});
+
+		console.log(this.charts);
+
+		localStorage.setItem('charts', JSON.stringify(this.charts));
+	}
+
+	initGridStack() {
+		$('.grid-stack').gridstack({
+
+			// widget class
+			itemClass: 'grid-stack-item',
+
+			// class for placeholder
+			placeholderClass: 'grid-stack-placeholder',
+
+			// text for placeholder
+			placeholderText: '',
+
+			// draggable handle selector
+			// handle: '.grid-stack-item-content',
+
+			// class for handle
+			handleClass: null,
+
+			// one cell height
+			cellHeight: 60,
+
+			// vertical gap size
+			verticalMargin: 20,
+
+			// unit
+			verticalMarginUnit: 'px',
+			cellHeightUnit: 'px',
+
+			// if false it tells to do not initialize existing items
+			auto: true,
+
+			// minimal width.
+			minWidth: 768,
+
+			// enable floating widgets
+			float: true,
+
+			// makes grid static
+			staticGrid: false,
+
+			// if true the resizing handles are shown even the user is not hovering over the widget
+			alwaysShowResizeHandle: true,
+
+			// allows to owerride jQuery UI draggable options
+			draggable: { handle: '.grid-stack-item-content', scroll: true, appendTo: 'body' },
+
+			// allows to owerride jQuery UI resizable options
+			resizable: {
+				handles: 'e, se, s, sw, w'
+			},
+
+			always_show_resize_handle: true,
+			placeholder_class: 'grid-stack-placeholder',
+			acceptWidgets: '.grid-stack-item'
+		});
+	}
+
 
 	ngAfterViewInit() {
-		
-			$.noConflict();
 
-			// $('.grid-stack').gridstack({
-			// 	animate: true,
-			// 	auto: true,
-			// 	width: 12,
-			// 	float: true,
-			// 	vertical_margin: 0,
-			// 	always_show_resize_handle: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
-			// 	resizable: {
-			// 		handles: 'e, se, s, sw, w'
-			// 	}   
-			// });
+		const that = this;
+
+		$('.grid-stack').on('gsresizestop', function (event, elem) {
+			console.log('resize');
+			that.saveNewGridAttributes(elem);
+		});
+
+		$('.grid-stack').on('dragstop', function (event, ui) {
+			console.log('drag');
+			// Wait until the the stat of the element has changed
+			setTimeout(() => {
+				that.saveNewGridAttributes(event.target);
+			}, 10);
+		});
+
+		// this.initGridStack()
+		this.initGridStack();
 
 
-			$('.grid-stack').gridstack({
 
-				// turns animation on
-				animate: true,
-			  
-				// amount of columns
-				column: 12,
-			  
-				// max number rows
-				maxRow: 5,
-			  
-				// maximum rows amount
-				height: 0, 
-				scroll: true,
-			  
-				// widget class
-				itemClass: 'grid-stack-item',
-			  
-				// class for placeholder
-				placeholderClass: 'grid-stack-placeholder',
-			  
-				// text for placeholder
-				placeholderText: '',
-			  
-				// draggable handle selector
-				// handle: '.grid-stack-item-content',
-			  
-				// class for handle
-				handleClass: null,
-			  
-				// one cell height
-				cellHeight: 60,
-			  
-				// vertical gap size
-				verticalMargin: 20,
-			  
-				// unit
-				verticalMarginUnit: 'px',
-				cellHeightUnit: 'px',
-			  
-				// if false it tells to do not initialize existing items
-				auto: true,
-				
-				// minimal width.
-				minWidth: 768,
-			  
-				// enable floating widgets
-				float: true,
-			  
-				// makes grid static
-				staticGrid: false,
-			  
-				// if true the resizing handles are shown even the user is not hovering over the widget
-				alwaysShowResizeHandle: true,
-			  
-				// allows to owerride jQuery UI draggable options
-				draggable: {handle: '.grid-stack-item-content', scroll: true, appendTo: 'body'},
-			  
-				// allows to owerride jQuery UI resizable options
-				resizable: {autoHide: false, handles: 'e, se, s, sw, w'},
-			  
-				// disallows dragging of widgets
-				// disableDrag: false,
-			  
-				// disallows resizing of widgets
-				// disableResize: false,
-			  
-				// if `true` turns grid to RTL. 
-				// Possible values are `true`, `false`, `'auto'`
-				// rtl: 'auto',
-			  
-				// if `true` widgets could be removed by dragging outside of the grid
-				// removable: false,
-			  
-				// time in milliseconds before widget is being removed while dragging outside of the grid
-				// removeTimeout: 2000,
-			  
-				// CSS class when in one column mode
-				// disableOneColumnMode: 'grid-stack-one-column-mode',
-			  
-				// class that implement drag'n'drop functionallity for gridstack
-				// ddPlugin: null,
-
-			  	// always_show_resize_handle: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
-				always_show_resize_handle: true,
-				placeholder_class: 'grid-stack-placeholder',
-				acceptWidgets: '.grid-stack-item'
-			  });
 
 	}
 
@@ -371,22 +312,36 @@ export class PublicDashboardComponent implements OnInit {
 		obj.widgets = this.widgetIds;
 
 
+
 		// this.newRecord.permissions = JSON.stringify(permissions);
 
 		this.isLoading = true;
 		this.datasourceDashboardService.create(obj).subscribe((response) => {
 			console.log('server response: ', response);
 			const msg = 'Record successfully created';
+			this.dashboardId = response._id;
+			Swal({
+				title: this.translate.instant('WELL_DONE'),
+				text: this.translate.instant('WIDGET_SUBMITTED'),
+				buttonsStyling: false,
+				confirmButtonClass: 'btn btn-fill btn-success',
+				type: 'success'
+			}).catch(Swal.noop)
 			this.isLoading = false;
+			this.router.navigate(['custom/my-dashboards/edit'], { state: { recordId: this.dashboardId } });
+			localStorage.removeItem('charts');
 		}, (err) => {
-			const msg = 'There was an error creating record'
+			const msg = 'There was an error creating record';
+			this.showNotification('top', 'center', msg, 'danger', 'pe-7s-attention');
 		});
 	}
 
 	saveCharts() {
 		// The array is deep copied to the uploadCharts
-		const uploadCharts = $.extend(true, [], this.charts);
+		let uploadCharts = $.extend(true, [], this.charts);
 		console.log('old charts: ', this.charts);
+
+		uploadCharts = uploadCharts.filter(chart => !chart.saved);
 
 		uploadCharts.map(chart => {
 			chart.name = chart.layout.hasOwnProperty('title') ? chart.layout.title.text : 'CHART_NAME';
@@ -394,25 +349,37 @@ export class PublicDashboardComponent implements OnInit {
 			chart.layout = JSON.stringify(chart.layout);
 			chart.config = JSON.stringify(chart.config);
 			chart.data = JSON.stringify(chart.data);
-			delete chart['gridstack'];
+			chart.gridstack = JSON.stringify(chart.gridstack);
 			delete chart['id'];
+			delete chart['saved'];
 			delete chart['filteredData'];
 			chart.user = this.authService.getLoggedInUserId();
 			return chart;
 		});
 
 		console.log('new charts: ', uploadCharts);
-		this.widgetService.addBulkWidgets(uploadCharts).subscribe(res => {
-			console.log(res);
-			this.widgetIds = res.ids;
-			if (!this.dashboardName.length) {
+
+		if (uploadCharts.length) {
+
+			this.widgetService.addBulkWidgets(uploadCharts).subscribe(res => {
+				console.log(res);
+				this.widgetIds = res.ids;
+
+				this.charts.map(chart => {
+					chart.saved = true;
+					return chart;
+				});
+
 				this.getDashboardName();
-			} else {
-				this.saveDashboard();
-			}
-		}, err => {
-			console.log('err: ', err);
-		});
+
+			}, err => {
+				console.log('err: ', err);
+			});
+		} else {
+			const msg = 'Charts are already saved';
+			this.showNotification('top', 'center', msg, 'success', 'pe-7s-check');
+		}
+
 
 	}
 
@@ -437,6 +404,7 @@ export class PublicDashboardComponent implements OnInit {
 				console.log(`dialog was dismissed by ${dismiss}`);
 			});
 	}
+
 	removeChart(chartId) {
 		this.charts = JSON.parse(localStorage.getItem('charts'));
 		this.charts.forEach((el, i) => {
@@ -449,6 +417,22 @@ export class PublicDashboardComponent implements OnInit {
 		}
 		localStorage.setItem('charts', JSON.stringify(this.charts));
 	}
+
+	showNotification(from, align, msg, type, icon) {
+		$.notify({
+			icon: icon,
+			message: msg
+
+		}, {
+			type: type,
+			timer: 4000,
+			placement: {
+				from: from,
+				align: align
+			}
+		});
+	}
+
 
 
 }

@@ -11,6 +11,8 @@ import { MydashboardComponent } from './mydashboard.component';
 import { CreateMydashboardComponent } from './dialogs/create-mydashboard/create-mydashboard.component';
 import * as PlotlyJS from 'plotly.js/dist/plotly.js';
 import { PlotlyModule } from 'angular-plotly.js';
+import { EditDashboardComponent } from './dialogs/edit-dashboard/edit-dashboard.component';
+import { AddWidgetComponent } from './dialogs/add-widget/add-widget.component';
 PlotlyModule.plotlyjs = PlotlyJS;
 
 
@@ -31,7 +33,8 @@ PlotlyModule.plotlyjs = PlotlyJS;
 	declarations: [
 		MydashboardComponent,
 		CreateMydashboardComponent,
-		// AddWidgetComponent,
+		EditDashboardComponent,
+		AddWidgetComponent,
 	]
 })
 export class MydashboardModule { }

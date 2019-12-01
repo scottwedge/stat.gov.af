@@ -134,6 +134,8 @@ export class MydashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
 			this.initTable();
 			this.isLoading = false;
+			console.log('pDashboards: ', data);
+			
 			// console.log('roles data ', this.result);
 
 		}, (err) => {

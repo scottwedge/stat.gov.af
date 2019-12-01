@@ -14,6 +14,8 @@ export interface IWidgetModel extends Document {
     user: string;
     config: Object;
     data: Object;
+    layout: Object;
+    gridstack: Object;
     createdAt: string;
 }
 
@@ -48,6 +50,13 @@ const WidgetSchema: Schema = new Schema({
         index: false
     },
 
+    gridstack: {
+        type: Object,
+        required: true,
+        trim: false,
+        index: false
+    },
+
     config: {
         type: Object,
         required: false,
@@ -68,11 +77,13 @@ const WidgetSchema: Schema = new Schema({
 
     try {
         const configJSON = JSON.parse(widget.config);
-        const dataJSON = JSON.parse(widget.data)
-        const layoutJSON = JSON.parse(widget.layout)
+        const dataJSON = JSON.parse(widget.data);
+        const layoutJSON = JSON.parse(widget.layout);
+        const gridstackJSON = JSON.parse(widget.gridstack);
         widget.config = configJSON;
         widget.data = dataJSON;
         widget.layout = layoutJSON;
+        widget.gridstack = gridstackJSON;
 
         next();
     } catch (error) {

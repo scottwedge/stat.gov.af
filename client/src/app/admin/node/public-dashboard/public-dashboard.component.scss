@@ -94,3 +94,24 @@ input[type=submit] {
 .ui-resizable-se {
     display: inline-block;
 }
+
+.indicator {
+  height: 4px;
+}
+
+.saved-indicator {
+  background-color: #28a745 !important;
+}
+
+.unsaved-indicator {
+  background-color: #ffc107;
+}
+
+.chart-indicators {
+  display: inline-flex;
+  line-height: 27px;
+}
+
+.chart-indicators .ind {
+  margin: 0 5px;
+}

@@ -84,7 +84,7 @@ export class VisualizeComponent implements OnInit, AfterViewInit {
 		minSizeY: 5,
 		row: 0,
 		sizeX: 3,
-		sizeY: 10,
+		sizeY: 5,
 	}
 	data: any = [];
 	charts: any = [];
@@ -627,6 +627,7 @@ export class VisualizeComponent implements OnInit, AfterViewInit {
 		}
 		const chart = {
 			data: this.data,
+			saved: false,
 			filteredData: {
 				rows: this.rows,
 				column: this.columns
@@ -650,7 +651,7 @@ export class VisualizeComponent implements OnInit, AfterViewInit {
 			}
 			const charObj = this.charts[chartLength - 1];
 			if (chartLength % 2 === 0) {
-				chart['gridstack'].row = charObj.gridstack.row + 10;
+				chart['gridstack'].row = charObj.gridstack.row + 5;
 			} else {
 				chart['gridstack'].row = charObj.gridstack.row;
 			}

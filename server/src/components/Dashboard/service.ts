@@ -13,7 +13,7 @@ const DashboardService: IDashboardService = {
      * @returns {Promise < IDashboardModel[] >}
      * @memberof DashboardService
      */
-    async findAll(): Promise < IDashboardModel[] > {
+    async findAll(): Promise<IDashboardModel[]> {
         try {
             return await DashboardModel.find({});
         } catch (error) {
@@ -26,11 +26,11 @@ const DashboardService: IDashboardService = {
      * @returns {Promise < IDashboardModel >}
      * @memberof DashboardService
      */
-    async findOne(id: string): Promise < IDashboardModel > {
+    async findOne(id: string): Promise<IDashboardModel> {
         try {
-            const validate: Joi.ValidationResult < {
+            const validate: Joi.ValidationResult<{
                 id: string
-            } > = DashboardValidation.get({
+            }> = DashboardValidation.get({
                 id
             });
 
@@ -51,9 +51,9 @@ const DashboardService: IDashboardService = {
      * @returns {Promise < IDashboardModel >}
      * @memberof DashboardService
      */
-    async insert(body: IDashboardModel): Promise < IDashboardModel > {
+    async insert(body: IDashboardModel): Promise<IDashboardModel> {
         try {
-            const validate: Joi.ValidationResult < IDashboardModel > = DashboardValidation.create(body);
+            const validate: Joi.ValidationResult<IDashboardModel> = DashboardValidation.create(body);
 
             if (validate.error) {
                 throw new Error(validate.error.message);
@@ -68,20 +68,20 @@ const DashboardService: IDashboardService = {
     },
 
 
-        /**
+    /**
      * @param {IRoleModel} user
      * @returns {Promise < IRoleModel >}
      * @memberof PermissionService
      */
-    async update(code: string, body: IDashboardModel): Promise < IDashboardModel > {
+    async update(code: string, body: IDashboardModel): Promise<IDashboardModel> {
         try {
-            const validate: Joi.ValidationResult < IDashboardModel > = DashboardValidation.create(body);
+            const validate: Joi.ValidationResult<IDashboardModel> = DashboardValidation.create(body);
 
             if (validate.error) {
                 throw new Error(validate.error.message);
             }
 
-            const user: IDashboardModel = await DashboardModel.update({_id: Types.ObjectId(code)}, body);
+            const user: IDashboardModel = await DashboardModel.update({ _id: Types.ObjectId(code) }, body);
 
             return user;
         } catch (error) {
@@ -94,11 +94,11 @@ const DashboardService: IDashboardService = {
      * @returns {Promise < IDashboardModel >}
      * @memberof DashboardService
      */
-    async remove(id: string): Promise < IDashboardModel > {
+    async remove(id: string): Promise<IDashboardModel> {
         try {
-            const validate: Joi.ValidationResult < {
+            const validate: Joi.ValidationResult<{
                 id: string
-            } > = DashboardValidation.remove({
+            }> = DashboardValidation.remove({
                 id
             });
 

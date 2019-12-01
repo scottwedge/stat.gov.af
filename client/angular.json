@@ -36,10 +36,8 @@
             ],
             "scripts": [
               "node_modules/hammerjs/hammer.min.js",
-              "node_modules/jquery/dist/jquery.js",
               "node_modules/select2/dist/js/select2.min.js",
               "node_modules/lodash/lodash.min.js",
-              "node_modules/gridstack/dist/gridstack.js",
               "node_modules/bootstrap/dist/js/bootstrap.js",
               "node_modules/moment/moment.js",
               "node_modules/twitter-bootstrap-wizard/jquery.bootstrap.wizard.js",
@@ -49,6 +47,7 @@
               "node_modules/datatables.net/js/jquery.dataTables.js",
               "node_modules/datatables.net-bs/js/dataTables.bootstrap.js",
               "node_modules/datatables.net-responsive/js/dataTables.responsive.js",
+              "node_modules/bootstrap-notify/bootstrap-notify.js",
               "node_modules/bootstrap-select/dist/js/bootstrap-select.js",
               "node_modules/bootstrap-switch/dist/js/bootstrap-switch.js",
               "node_modules/sweetalert2/dist/sweetalert2.js",

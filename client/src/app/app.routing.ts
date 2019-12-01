@@ -33,7 +33,7 @@ export const AppRoutes: Routes = [{
 			// component: DashboardComponent
 		},
 		{ path: 'build-query', loadChildren: './query-builder/query-builder.module#QueryBuilderModule' },
-		{ path: 'test', loadChildren: './admin/node/mydashboard/mydashboard.module#MydashboardModule' },
+		// { path: 'my-dashboard', loadChildren: './admin/node/mydashboard/mydashboard.module#MydashboardModule' },
 		{ path: 'public-dashboard', loadChildren: './admin/node/public-dashboard/public-dashboard.module#PublicDashboardModule' },
 		// { path: 'visualize', component: VisualizeComponent},
 		{ path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -64,11 +64,11 @@ export const AppRoutes: Routes = [{
 			// component: DashboardComponent
 		},
 
-		{
-			path: 'my-dashboards/edit',
-			// loadChildren: './admin/node/mydashboard/mydashboard.module#MydashboardModule', 
-			component: EditDashboardComponent
-		},
+		// {
+		// 	path: 'my-dashboards/edit',
+		// 	// loadChildren: './admin/node/mydashboard/mydashboard.module#MydashboardModule',
+		// 	component: EditDashboardComponent
+		// },
 
 	]
 },

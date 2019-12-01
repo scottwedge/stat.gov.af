@@ -180,7 +180,7 @@ export class NavbarComponent implements OnInit {
 	}
 
 	navigateToMyDashboards() {
-		this.authService.isLoggedIn() ?	this.router.navigate(['/test']) : this.router.navigate(['/public-dashboard']);
+		this.authService.isLoggedIn() ?	this.router.navigate(['/custom/my-dashboards']) : this.router.navigate(['/public-dashboard']);
 	}
 
 

@@ -12,7 +12,11 @@ export const MydashboardRoutes: Routes = [
 		path: '',
 		component: MydashboardComponent,
 		pathMatch: 'full'
-	},
+	}, {
+		path: 'edit',
+		component: EditDashboardComponent,
+		pathMatch: 'full'
+	}
 
 
 ];

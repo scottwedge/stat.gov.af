@@ -30,12 +30,23 @@
             </button>
 
             <button class="btn btn-danger" type="button" [disabled]="loading || !charts.length" data-toggle="tooltip"
-            data-placement="top" [title]="'RESET-DASHBOARD' | translate" (click)="resetCharts()">
-            <span class="btn-label" *ngIf="!loading">
-              <i class="fa fa-trash"></i>
-            </span>
-            <i class="fa fa-spinner fa-spin" *ngIf="loading"></i>
+              data-placement="top" [title]="'RESET-DASHBOARD' | translate" (click)="resetCharts()">
+              <span class="btn-label" *ngIf="!loading">
+                <i class="fa fa-trash"></i>
+              </span>
+              <i class="fa fa-spinner fa-spin" *ngIf="loading"></i>
             </button>
+
+            <!-- <div class="chart-indicators">
+              <div class="ind saved-chart-indicator">
+                <div>Saved Chart</div>
+                <div class="indicator saved-indicator"></div>
+              </div>
+              <div class="ind unsaved-chart-indicator">
+                <div>Not Saved Chart</div>
+                <div class="indicator unsaved-indicator"></div>
+              </div>
+            </div> -->
           </div>
         </div>
 
@@ -46,70 +57,21 @@
     <hr>
     <div class="all-charts">
       <div class="chart-view" *ngIf="charts.length; else nodata">
-        <div class="row">
-          <div class="col-md-6 col-sm-12" *ngFor="let chart of charts">
 
-				<grid-stack #gridStackMain id="gridStackMain" class="grid-stack" [options]="area">
-					<grid-stack-item *ngFor="let widget of widgets" id="widget-{{widget.ID}}" [option]="widget.Item" class="grid-stack-item">
-						<div class="widget-header">
-						<div class="widget-header-text">{{widget.Caption}}</div>
-						</div>
-						<div class="widget-content">
-								<div class="card">
-										<span class="btn-label close pull-right" (click)="removeChart(chart.id)"
-										data-toggle="tooltip" data-placement="top" [title]="'REMOVE' | translate">
-											<i class="fa fa-close"></i>
-										</span>
-										<div class="content">
-											<plotly-plot [data]="chart.data" [config]="chart.config" [layout]="chart.layout"
-											[useResizeHandler]="true" [style]="{position: 'relative', width: '100%', height: '100%'}"
-											#plotlyChartContainer>
-                      </plotly-plot>
-                      
-
-										</div>
-									</div>
+          <div class="grid-stack" data-gs-width="6">
+            <div class="grid-stack-item" *ngFor="let chart of charts" [id]="chart.id"
+              [attr.data-gs-x]="chart.gridstack.col" [attr.data-gs-y]="chart.gridstack.row"
+              [attr.data-gs-width]="chart.gridstack.sizeX" [attr.data-gs-height]="chart.gridstack.sizeY">
+              <div class="grid-stack-item-content card">
+                <plotly-plot [data]="chart.data" [config]="chart.config" [layout]="chart.layout"
+                  [useResizeHandler]="true" [style]="{position: 'relative', width: '100%', height: '100%'}"
+                  #plotlyChartContainer>
+                </plotly-plot>
+              </div>
             </div>
-            
-            
-					</grid-stack-item>
-				</grid-stack>
-			
-			
-			
-<!-- 			
-			<grid-stack #grid_stack class="grid-stack dashboard-wrapper preview-mode"
-					[ngClass]="{'grid-stack-rtl': getLangDirection() == 'rtl'}" style="height: 100%!important;"
-					[options]="area">
-					<grid-stack-item #grid_stack_item *ngFor="let chart of charts"
-						class="grid-stack-item dashboard-widget-wrapper" id="{{chart.id}}"
-						[attr.data-gs-x]="chart.gridstack.col"
-						[attr.data-gs-y]="chart.gridstack.row"
-						[attr.data-gs-width]="chart.gridstack.sizeX"
-						[attr.data-gs-height]="chart.gridstack.sizeY"
-						[attr.data-gs-min-width]="chart.gridstack.minSizeX"
-						[attr.data-gs-max-width]="chart.gridstack.maxSizeX"
-						[attr.data-gs-min-height]="chart.gridstack.minSizeY"
-						[attr.data-gs-max-height]="chart.gridstack.maxSizeY">
-						<div class="card">
-							<span class="btn-label close pull-right" (click)="removeChart(chart.id)"
-							data-toggle="tooltip" data-placement="top" [title]="'REMOVE' | translate">
-								<i class="fa fa-close"></i>
-							</span>
-							<div class="content">
-								<plotly-plot [data]="chart.data" [config]="chart.config" [layout]="chart.layout"
-								[useResizeHandler]="true" [style]="{position: 'relative', width: '100%', height: '100%'}"
-								#plotlyChartContainer>
-								</plotly-plot>
-							</div>
-						</div>
-					</grid-stack-item>
-				</grid-stack> -->
-
-
-            
           </div>
-        </div>
+
+
       </div>
       <ng-template #nodata>
         <div><br>
@@ -167,7 +129,7 @@
                 <div class="form-group form-inline text-center ">
                   <input type="submit" value="{{ 'LOGIN' | translate }}"
                     class="form-control btn btn-primary btn-fill ml-1" [disabled]="loginForm.invalid">
-                    <input type="btn" value="{{ 'CANCEL' | translate }}" class="form-control btn btn-secondary btn-fill"
+                  <input type="btn" value="{{ 'CANCEL' | translate }}" class="form-control btn btn-secondary btn-fill"
                     data-dismiss="modal">
                 </div>
                 <div class="form-group">
@@ -244,11 +206,9 @@
             <input type="text" name="" id="" class="form-control" placeholder="Dashboard Name"
               [(ngModel)]="dashboardName">
           </div>
-        </div>
-      </div>
-      <div class="footer">
-        <button class="btn btn-primary btn-fill" (click)="saveDashboard()" [disabled]="!dashboardName.length"
+          <button class="btn btn-primary btn-fill" (click)="saveDashboard()" [disabled]="!dashboardName.length"
           data-dismiss="modal">Submit</button>
+        </div>
       </div>
     </div>
   </div>

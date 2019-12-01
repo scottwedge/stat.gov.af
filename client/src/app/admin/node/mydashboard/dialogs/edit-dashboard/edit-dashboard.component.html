@@ -46,15 +46,29 @@
 
                 <br><br><br>
 
-                <div class="card">
-                    <div class="content">
-                        <div class="toolbar">
-                            <!--        Here you can write extra buttons/actions for the toolbar              -->
-                        </div>
-                        <div class="all-charts" *ngIf="dashboard">
-                            <div class="chart-view" *ngIf="dashboard.widgets; else nodata">
-                                <div class="row">
-                                    <div class="col-md-6 col-sm-12" *ngFor="let widget of dashboard.widgets">
+
+                <div *ngIf="dashboard">
+                    <div *ngIf="dashboard.widgets; else nodata">
+                        <div>
+                            <div class="grid-stack" data-gs-width="6">
+                                <div class="grid-stack-item" *ngFor="let widget of dashboard.widgets" [id]="widget._id"
+                                    [attr.data-gs-x]="widget.gridstack.col" [attr.data-gs-y]="widget.gridstack.row"
+                                    [attr.data-gs-width]="widget.gridstack.sizeX"
+                                    [attr.data-gs-height]="widget.gridstack.sizeY">
+                                    <div>
+
+                                        <div class="grid-stack-item-content card">
+                                            <plotly-plot [data]="widget.data" [config]="widget.config"
+                                                [layout]="widget.layout" [useResizeHandler]="true"
+                                                [style]="{position: 'relative', width: '100%', height: '100%'}"
+                                                #plotlyChartContainer>
+                                            </plotly-plot>
+                                            <!-- <div class="indicator unsaved-indicator" [class.saved-indicator]="chart.saved"></div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="col-md-6 col-sm-12" *ngFor="let widget of dashboard.widgets">
                                         <div class="card">
                                             <div class="content">
 
@@ -65,18 +79,17 @@
                                                 </plotly-plot>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <ng-template #nodata>
-                                <div class="jumbotron no-data">
-                                    <div [class.dot-falling]="loading"></div>
-                                    <h4 *ngIf="!loading" class="text-center">{{ 'NODATA' | translate }}</h4>
-                                </div>
-                            </ng-template>
-
+                                    </div> -->
                         </div>
                     </div>
+                    <ng-template #nodata>
+                        <div class="jumbotron no-data">
+                            <div [class.dot-falling]="loading"></div>
+                            <h4 *ngIf="!loading" class="text-center">{{ 'NODATA' | translate }}</h4>
+                        </div>
+                    </ng-template>
+
+
                     <!-- end content-->
                 </div>
                 <!--  end card  -->

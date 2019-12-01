@@ -1,14 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { DatasourceDashboardService } from 'app/services/datasource.dashboard.service';
 import { DatasourceWidgetService } from 'app/services/datasource.widget.service';
 import { Router } from '@angular/router';
+declare var $: any;
+
 
 @Component({
 	selector: 'app-edit-dashboard',
 	templateUrl: './edit-dashboard.component.html',
 	styleUrls: ['./edit-dashboard.component.scss']
 })
-export class EditDashboardComponent implements OnInit {
+export class EditDashboardComponent implements OnInit, AfterViewInit {
 	recordId: any;
 	dashboard: any;
 	showCreateModal: boolean;
@@ -34,7 +36,9 @@ export class EditDashboardComponent implements OnInit {
 		this.datasourceDashboardService.loadById(this.recordId).subscribe((data) => {
 			this.dashboard = data;
 			console.log('Data', data);
-			
+			setTimeout(() => {
+				this.initGridstack();
+			}, 10);
 
 		}, (err) => {
 
@@ -43,6 +47,67 @@ export class EditDashboardComponent implements OnInit {
 
 		});
 
+	}
+
+	ngAfterViewInit() {
+
+	}
+
+	initGridstack() {
+		$('.grid-stack').gridstack({
+
+			// widget class
+			itemClass: 'grid-stack-item',
+
+			// class for placeholder
+			placeholderClass: 'grid-stack-placeholder',
+
+			// text for placeholder
+			placeholderText: '',
+
+			// draggable handle selector
+			// handle: '.grid-stack-item-content',
+
+			// class for handle
+			handleClass: null,
+
+			// one cell height
+			cellHeight: 60,
+
+			// vertical gap size
+			verticalMargin: 20,
+
+			// unit
+			verticalMarginUnit: 'px',
+			cellHeightUnit: 'px',
+
+			// if false it tells to do not initialize existing items
+			auto: true,
+
+			// minimal width.
+			minWidth: 768,
+
+			// enable floating widgets
+			float: true,
+
+			// makes grid static
+			staticGrid: false,
+
+			// if true the resizing handles are shown even the user is not hovering over the widget
+			alwaysShowResizeHandle: true,
+
+			// allows to owerride jQuery UI draggable options
+			draggable: { handle: '.grid-stack-item-content', scroll: true, appendTo: 'body' },
+
+			// allows to owerride jQuery UI resizable options
+			resizable: {
+				handles: 'e, se, s, sw, w'
+			},
+
+			always_show_resize_handle: true,
+			placeholder_class: 'grid-stack-placeholder',
+			acceptWidgets: '.grid-stack-item'
+		});
 	}
 
 

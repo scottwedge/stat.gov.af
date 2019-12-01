@@ -27,4 +27,8 @@ export class DatasourceDashboardService {
 	create(data): Observable<any> {
 		return this.httpClient.post(`${this.nodeApi}/create`, data);
 	}
+
+	update(data, id): Observable<any> {
+		return this.httpClient.put(`${this.nodeApi}/update/` + id, data);
+	}
 }

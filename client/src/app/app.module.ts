@@ -83,8 +83,7 @@ PlotlyModule.plotlyjs = PlotlyJS;
 		DefaultLayoutComponent,
 		HomeComponent,
 		SelectLangComponent,
-		AddWidgetComponent,
-		EditDashboardComponent
+		// AddWidgetComponent,
 		// VisualizeComponent,
 		// DashboardComponent
 	],

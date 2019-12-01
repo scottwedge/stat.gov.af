@@ -31,6 +31,14 @@ router.post('/create', DashboardComponent.create);
  */
 router.delete('/remove/:id', DashboardComponent.remove);
 
+
+/**
+ * UPDATE method route
+ * @example  http://localhost:PORT/api/dashboards/:id
+ */
+router.put('/update/:id', DashboardComponent.update);
+
+
 /**
  * @export {express.Router}
  */
