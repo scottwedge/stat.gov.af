@@ -78,12 +78,12 @@ export class VisualizeComponent implements OnInit, AfterViewInit {
 	gridstack: any = {
 		autoHeight: false,
 		col: 0,
-		maxSizeX: 6,
+		maxSizeX: 12,
 		maxSizeY: 1000,
 		minSizeX: 1,
 		minSizeY: 5,
 		row: 0,
-		sizeX: 3,
+		sizeX: 6,
 		sizeY: 5,
 	}
 	data: any = [];
@@ -645,7 +645,7 @@ export class VisualizeComponent implements OnInit, AfterViewInit {
 		} else {
 			chart['id'] = (Number(localStorage.getItem('chartId'))) + 1;
 			if (chart['id'] % 2 === 0) {
-				chart['gridstack'].col = 3;
+				chart['gridstack'].col = 6;
 			} else {
 				chart['gridstack'].col = 0;
 			}

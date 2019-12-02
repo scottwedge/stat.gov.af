@@ -76,8 +76,7 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
             return next(new HttpError(error.message.status, error.message));
         }
 
-        res.json({
-            status: 400,
+        res.status(400).json({
             message: error.message
         });
     }

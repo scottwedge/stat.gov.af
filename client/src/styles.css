@@ -242,3 +242,14 @@
 .mr-3 {
   margin-top: 3rem !important;
 }
+
+
+/* Chart rendering related */
+.remove-chart {
+  position: absolute;
+  z-index: 12;
+}
+
+.title-actions button {
+  margin: 0 .5em;
+}

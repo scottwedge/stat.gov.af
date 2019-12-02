@@ -1,7 +1,13 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
 import { DatasourceDashboardService } from 'app/services/datasource.dashboard.service';
 import { DatasourceWidgetService } from 'app/services/datasource.widget.service';
 import { Router } from '@angular/router';
+import { GridStackItem, GridStackOptions, GridStackItemComponent, GridStackComponent } from 'ng4-gridstack'
+import { Dashboard, dashboardGridOptions } from '../../../../../models/dashboard';
+import Swal from 'sweetalert2';
+import { TranslateService } from '@ngx-translate/core';
+
+
 declare var $: any;
 
 
@@ -17,9 +23,14 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 	showEditModal: boolean;
 	loading: boolean;
 	allWidgets: any;
+	originalDashboard;
+	// @Input('isReadOnly') readonly;
+	readOnly;
+
 
 	constructor(
 		private datasourceDashboardService: DatasourceDashboardService,
+		private translate: TranslateService,
 		private datasourceWidgetService: DatasourceWidgetService,
 		private router: Router
 	) { }
@@ -27,18 +38,26 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 	ngOnInit() {
 
 		this.recordId = history.state.recordId;
+		this.readOnly = history.state.readonly;
+
+		console.log('Read Only: ', this.readOnly);
+
 		console.log('record ID: ', this.recordId);
-
-
-		// console.log('Dashboard ID: ', this.router.getCurrentNavigation().extras.state);
-
 
 		this.datasourceDashboardService.loadById(this.recordId).subscribe((data) => {
 			this.dashboard = data;
-			console.log('Data', data);
+
+			// This is to undo all the changes if user want to
+			this.originalDashboard = data;
+
+			// Add stat temp value to each widget to track
+			this.dashboard.widgets.map(w => {
+				w.state = 'unchanged'
+			});
 			setTimeout(() => {
 				this.initGridstack();
 			}, 10);
+			console.log('Data', data);
 
 		}, (err) => {
 
@@ -49,49 +68,9 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 
 	}
 
-	ngAfterViewInit() {
-
-	}
 
 	initGridstack() {
 		$('.grid-stack').gridstack({
-
-			// widget class
-			itemClass: 'grid-stack-item',
-
-			// class for placeholder
-			placeholderClass: 'grid-stack-placeholder',
-
-			// text for placeholder
-			placeholderText: '',
-
-			// draggable handle selector
-			// handle: '.grid-stack-item-content',
-
-			// class for handle
-			handleClass: null,
-
-			// one cell height
-			cellHeight: 60,
-
-			// vertical gap size
-			verticalMargin: 20,
-
-			// unit
-			verticalMarginUnit: 'px',
-			cellHeightUnit: 'px',
-
-			// if false it tells to do not initialize existing items
-			auto: true,
-
-			// minimal width.
-			minWidth: 768,
-
-			// enable floating widgets
-			float: true,
-
-			// makes grid static
-			staticGrid: false,
 
 			// if true the resizing handles are shown even the user is not hovering over the widget
 			alwaysShowResizeHandle: true,
@@ -108,6 +87,8 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 			placeholder_class: 'grid-stack-placeholder',
 			acceptWidgets: '.grid-stack-item'
 		});
+
+		this.initGridstackEvents();
 	}
 
 
@@ -120,8 +101,6 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 			console.log('data error: ', err);
 		});
 	}
-
-
 
 
 	toggleModal(data) {
@@ -154,6 +133,51 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 		this.reloadData();
 	}
 
+	saveNewGridAttributes(elem) {
+
+		const chartId = $(elem).attr('id');
+		console.log('charId: ', chartId);
+		this.dashboard.widgets.map(chart => {
+			if (chart._id === chartId) {
+				console.log('this id matches', chartId);
+				console.log($(elem).attr('data-gs-x'));
+				console.log('Element is : ', elem);
+
+				chart.gridstack.col = Number($(elem).attr('data-gs-x'));
+				chart.gridstack.row = Number($(elem).attr('data-gs-y'));
+				chart.gridstack.sizeX = Number($(elem).attr('data-gs-width'));
+				chart.gridstack.sizeY = Number($(elem).attr('data-gs-height'));
+				chart.state = 'modified';
+			}
+
+			return chart;
+		});
+
+		console.log(this.dashboard.widgets);
+
+	}
+
+	initGridstackEvents() {
+		const that = this;
+
+		$('.grid-stack').on('gsresizestop', function (event, elem) {
+			console.log('resize');
+			that.saveNewGridAttributes(elem);
+		});
+
+		$('.grid-stack').on('dragstop', function (event, ui) {
+			console.log('drag');
+			// Wait until the the stat of the element has changed
+			setTimeout(() => {
+				that.saveNewGridAttributes(event.target);
+			}, 10);
+		});
+	}
+
+	ngAfterViewInit() {
+
+	}
+
 
 
 	addNew() {
@@ -162,7 +186,8 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 		// }
 		this.loading = true;
 
-		this.datasourceWidgetService.loadWidgets().subscribe((data) => {
+
+		this.datasourceWidgetService.loadWidgetsByUserId().subscribe((data) => {
 			this.allWidgets = data;
 			console.log('all widgets are:', this.allWidgets);
 			this.loading = false;
@@ -171,6 +196,32 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 		});
 
 	}
+
+	removeChart(chartId) {
+
+		Swal({
+			title: this.translate.instant('RESET-ALL-ALERT'),
+			type: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: this.translate.instant('CONFIRM-BUTTONT-TEXT'),
+			cancelButtonText: this.translate.instant('CANCEL'),
+			useRejections: true
+		}).then(
+			result => {
+				this.dashboard.widgets.forEach((el, i) => {
+					if (el._id === chartId) {
+						this.dashboard.widgets.splice(i, 1);
+					}
+				});
+			},
+			dismiss => {
+				console.log(`dialog was dismissed by ${dismiss}`);
+			});
+
+	}
+
 
 
 

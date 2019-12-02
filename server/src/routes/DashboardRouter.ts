@@ -40,6 +40,12 @@ router.put('/update/:id', DashboardComponent.update);
 
 
 /**
+ * POST method route
+ * @example http://localhost:PORT/node-api/find-by-user/:id
+ */
+router.get('/find-by-user/:id', DashboardComponent.findByUserId);
+
+/**
  * @export {express.Router}
  */
 export default router;

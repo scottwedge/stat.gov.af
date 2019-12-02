@@ -106,6 +106,9 @@ export class PublicDashboardComponent implements OnInit {
 		if (window.localStorage) {
 			if (localStorage.getItem('charts')) {
 				this.charts = JSON.parse(localStorage.getItem('charts'));
+				setTimeout(() => {
+					this.initGridStack()
+				}, 10);
 			}
 		}
 	}
@@ -144,8 +147,10 @@ export class PublicDashboardComponent implements OnInit {
 			this.saveCharts();
 
 		}, err => {
-			console.log('Error: ', err);
-
+			console.log('error: ', err);
+			const msg = 'Failed to Login. Please enter correct username and password'
+			this.showNotification('top', 'center', msg, 'danger', 'pe-7s-attention');
+			this.isLoading = false;
 		});
 	}
 
@@ -171,6 +176,9 @@ export class PublicDashboardComponent implements OnInit {
 
 		}, err => {
 			console.log('error: ', err);
+			const msg = 'Something wrong';
+			this.showNotification('top', 'center', msg, 'danger', 'pe-7s-attention');
+			this.isLoading = false;
 
 		});
 	}
@@ -211,55 +219,12 @@ export class PublicDashboardComponent implements OnInit {
 
 			// widget class
 			itemClass: 'grid-stack-item',
-
-			// class for placeholder
-			placeholderClass: 'grid-stack-placeholder',
-
-			// text for placeholder
-			placeholderText: '',
-
-			// draggable handle selector
-			// handle: '.grid-stack-item-content',
-
-			// class for handle
-			handleClass: null,
-
-			// one cell height
-			cellHeight: 60,
-
-			// vertical gap size
-			verticalMargin: 20,
-
-			// unit
-			verticalMarginUnit: 'px',
-			cellHeightUnit: 'px',
-
-			// if false it tells to do not initialize existing items
-			auto: true,
-
-			// minimal width.
-			minWidth: 768,
-
-			// enable floating widgets
-			float: true,
-
-			// makes grid static
-			staticGrid: false,
-
-			// if true the resizing handles are shown even the user is not hovering over the widget
-			alwaysShowResizeHandle: true,
-
-			// allows to owerride jQuery UI draggable options
 			draggable: { handle: '.grid-stack-item-content', scroll: true, appendTo: 'body' },
-
 			// allows to owerride jQuery UI resizable options
 			resizable: {
 				handles: 'e, se, s, sw, w'
 			},
 
-			always_show_resize_handle: true,
-			placeholder_class: 'grid-stack-placeholder',
-			acceptWidgets: '.grid-stack-item'
 		});
 	}
 
@@ -282,7 +247,7 @@ export class PublicDashboardComponent implements OnInit {
 		});
 
 		// this.initGridStack()
-		this.initGridStack();
+		// this.initGridStack();
 
 
 

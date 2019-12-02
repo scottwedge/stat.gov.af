@@ -134,6 +134,24 @@ const WidgetService: IWidgetService = {
         } catch (error) {
             throw new Error(error.message);
         }
+    },
+
+    /**
+    * @param {String} userId
+    * @returns {Promise < IWidgetModel[] >}
+    * @memberof WidgetService
+    */
+    async findAllByUserId(id: string): Promise<IWidgetModel[]> {
+        try {
+            const query: IWidgetModel[] = await WidgetModel.find({
+                user: Types.ObjectId(id)
+            });
+
+            return query;
+
+        } catch (error) {
+            throw new Error(error.message);
+        }
     }
 };
 

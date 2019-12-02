@@ -115,6 +115,24 @@ const DashboardService: IDashboardService = {
             throw new Error(error.message);
         }
     },
+
+    /**
+     * @param {String} userId
+     * @returns {Promise < IDashboardModel[] >}
+     * @memberof DashboardService
+     */
+    async findAllByUserId(id: string): Promise<IDashboardModel[]> {
+        try {
+            const query: IDashboardModel[] = await DashboardModel.find({
+                user: Types.ObjectId(id)
+            });
+
+            return query;
+
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
 };
 
 export default DashboardService;

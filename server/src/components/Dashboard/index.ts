@@ -109,3 +109,28 @@ export async function update(req: Request, res: Response, next: NextFunction): P
         next(new HttpError(error.message.status, error.message));
     }
 }
+
+
+/**
+ * @export
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * @returns {Promise < void >}
+ */
+export async function findByUserId(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const userId = req.params.id;
+
+        const dashboards: IDashboardModel[] = await DashboardService.findAllByUserId(userId);
+        
+        console.log('req params: ', req.params.id);
+
+        res.status(200).json({
+            dashboards,
+            message: 'charts successfully fetched'
+        });
+    } catch (error) {
+        next(new HttpError(error.message.status, error.message));
+    }
+}

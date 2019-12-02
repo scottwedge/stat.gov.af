@@ -33,9 +33,16 @@ router.post('/bulk-add', WidgetComponent.bulkAdd);
 
 /**
  * POST method route
- * @example http://localhost:PORT/node-api/queries
+ * @example http://localhost:PORT/node-api/find-by-dashboard/:id
  */
 router.get('/find-by-dashboard/:id', WidgetComponent.findByDashboardId);
+
+
+/**
+ * POST method route
+ * @example http://localhost:PORT/node-api/find-by-user/:id
+ */
+router.get('/find-by-user/:id', WidgetComponent.findByUserId);
 
 /**
  * DELETE method route

@@ -35,4 +35,12 @@ export interface IDashboardService {
      */
     remove(id: string): Promise<IDashboardModel>;
 
+
+    /**
+     * @param {String} userId
+     * @returns {Promise<IWidgetModel[]>}
+     * @memberof IDashboardService
+     */
+    findAllByUserId(id: string): Promise<IDashboardModel[]>;
+
 }

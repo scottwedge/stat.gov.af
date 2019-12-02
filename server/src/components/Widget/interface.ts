@@ -27,6 +27,13 @@ export interface IWidgetService {
     findAllByIds(widgetIds: [[object]]): Promise<IWidgetModel[]>;
 
     /**
+     * @param {String} userId
+     * @returns {Promise<IWidgetModel[]>}
+     * @memberof IWidgetService
+     */
+    findAllByUserId(id: string): Promise<IWidgetModel[]>;
+
+    /**
      * @param {IWidgetModel} IWidgetModel
      * @returns {Promise<IWidgetModel>}
      * @memberof IWidgetService

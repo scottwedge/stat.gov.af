@@ -126,8 +126,10 @@ export class MydashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 		// this.result = [];
 		this.loading = true;
 		this.dTableFlag = false;
-		this.datasourceDashboardService.load().subscribe(data => {
-			this.result = data;
+		this.datasourceDashboardService.loadByUserId().subscribe(data => {
+			console.log('My dashboards:', data);
+			
+			this.result = data.dashboards;
 			this.dTableFlag = true;
 			this.cdref.detectChanges();
 			this.loading = false;
@@ -135,7 +137,7 @@ export class MydashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 			this.initTable();
 			this.isLoading = false;
 			console.log('pDashboards: ', data);
-			
+
 			// console.log('roles data ', this.result);
 
 		}, (err) => {
@@ -170,24 +172,18 @@ export class MydashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	viewRecord(recordId) {
-		if (!this.viewLoading) {
-			this.viewLoading = true;
+
 
 			// if (!this.globals.principal.hasAuthority(['ADMIN', 'ROLE_VIEW'])) {
 			// 	return false;
 			// }
-			this.datasourceDashboardService.loadById(recordId).subscribe(data => {
-				console.log('Role Data', data);
-
-				this.viewLoading = false;
-
-				this.roleData = data;
-				$('#showModal').modal();
-				this.showViewModal = true;
-			}, err => {
-				this.viewLoading = false;
+			this.router.navigate(['/custom/my-dashboards/edit'], {
+				state: {
+					recordId: recordId,
+					readonly: true
+				}
 			});
-		}
+
 	}
 
 	editRecord(recordId) {
@@ -209,7 +205,12 @@ export class MydashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 		// }
 		console.log('Data', recordId);
 
-		this.router.navigate(['/custom/my-dashboards/edit'], { state: { recordId: recordId } });
+		this.router.navigate(['/custom/my-dashboards/edit'], {
+			state: {
+				recordId: recordId,
+				readonly: false
+			}
+		});
 
 
 	}

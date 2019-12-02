@@ -46,26 +46,25 @@ export class LoginComponent implements OnInit {
 			this.showNotification('top', 'center', msg, 'success', 'pe-7s-check');
 
 			this.authService.saveToken(token);
-			
+
 			this.authService.setLoggedInUserId(response.user_id)
 			this.allUserRoles = response.data;
 
 			console.log("Loggend User Id", this.authService.getLoggedInUserId());
 
 
-			if(this.allUserRoles.length != 0)
-			{
+			if (this.allUserRoles.length != 0) {
 				console.log("Array of data", response.data);
-				
+
 				JSON.parse(response.data).forEach(role => {
-					role.permissions.forEach(perm => {					
-						this.allPermissions.push(perm[0].name);					
+					role.permissions.forEach(perm => {
+						this.allPermissions.push(perm[0].name);
 					});
 				});
 				const authPrinicipal = new AuthPrincipal(response.logged, this.allPermissions, response.token);
 				localStorage.setItem("authPrincipal", JSON.stringify(authPrinicipal));
 			}
-			
+
 			this.router.navigate(['/dashboard']);
 		}, (err) => {
 			console.log('error: ', err);
@@ -95,18 +94,18 @@ export class LoginComponent implements OnInit {
 	}
 
 	showNotification(from, align, msg, type, icon) {
-		// $.notify({
-		// 	icon: icon,
-		// 	message: msg
+		$.notify({
+			icon: icon,
+			message: msg
 
-		// }, {
-		// 		type: type,
-		// 		timer: 2000,
-		// 		placement: {
-		// 			from: from,
-		// 			align: align
-		// 		}
-		// 	});
+		}, {
+				type: type,
+				timer: 2000,
+				placement: {
+					from: from,
+					align: align
+				}
+			});
 	}
 
 }

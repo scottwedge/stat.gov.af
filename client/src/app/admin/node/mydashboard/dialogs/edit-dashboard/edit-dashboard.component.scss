@@ -1,0 +1,20 @@
+.indicator {
+    height: 4px;
+    position: absolute;
+    z-index: 12;
+    bottom: 0px;
+    width: 100%;
+    transition: background .5s ease-in-out;
+  }
+  
+  .saved-indicator {
+    background-color: #28a745;
+  }
+  
+  .unsaved-indicator {
+    background-color: #ffc107;
+  }
+  
+  .new-indicator {
+    background-color: #007bff;
+  }
