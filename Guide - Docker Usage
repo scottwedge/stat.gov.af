@@ -1,0 +1,21 @@
+- Install Docker (https://docs.docker.com/docker-for-windows/install/)
+
+
+$ docker search ubuntu
+
+Pull an image from Docker Hub
+$ docker pull ubuntu
+$ docker images
+
+
+
+
+
+
+
+
+
+
+https://www.sitepoint.com/how-to-build-an-image-with-the-dockerfile/
+
+https://medium.com/faun/how-to-build-a-docker-container-from-scratch-docker-basics-a-must-know-395cba82897b
