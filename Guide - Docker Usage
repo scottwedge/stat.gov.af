@@ -5,14 +5,50 @@ $ docker search ubuntu
 
 Pull an image from Docker Hub
 $ docker pull ubuntu
-$ docker images
+
+see the images that were pulled
+$ docker images ubuntu
+$ docker images -a
+
+To remove an image
+$ docker rmi image_name
+
+List all containers
+$ docker ps -a
+
+Run a container of image by name or ID
+$ docker run -i -t image_name /bin/bash
+$ docker run -i -t image_id /bin/bash
+
+To remove a container 
+$ docker rm ID_or_Name_of_container
 
 
 
 
 
+Install python v2.7
+$ sudo apt update
+$ apt install python2.7 python-pip
 
 
+Redis 
+$ apt install redis-server
+$ service redis-server start
+$ service redis-server status
+
+$ redis-cli
+$ ping
+
+
+NodeJs
+$ apt install nodejs
+
+
+
+Postgresql
+$ apt show postgresql
+$ apt install postgresql postgresql-contrib
 
 
 
