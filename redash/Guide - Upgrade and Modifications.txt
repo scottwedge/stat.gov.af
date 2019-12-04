@@ -1,0 +1,45 @@
+
+
+
+
+###########################################################################
+Upgrade to v6 beta:
+- Create .env file with Postgres database connection settings
+- Copy apipublic to "/redash/handlers/" folder
+- Import api_public in "/redash/handlers/_init.py" -> init_app()
+- Copy serialize_public_dashboard() function to "/redash/serializers.py" file - Also import json package in this file.
+- Add all_public() and get_public_by_slug_and_org() functions to "/redash/models.py" Dashboard Class
+- Add is_public and is_default attributes to "/redash/models.py" Dashboard Class
+- Change the Title and remove the unnecessary URL from home page of redash (/client/app/pages/home/home.html)
+- Replace Redash logo images to with NSIA logo images in "/client/app/assets/images/" folder
+- Empty the "/redash/templates/footer.html" file
+- Replace redash with Stats.Gov.af the "/redash/templates/*.html" files
+
+
+dashboards.is_default : when this column is set to true then this dashboard is rendered on home page
+dashboards.is_public: when this column is set to true then that dashboard is accessible publicly
+widgets.note:
+queries.note:
+
+
+###########################################################################
+I have setup the Redash locally and here are the steps to follow:
+Step 1: Download and install Redash v5.0.0 source code (https://github.com/getredash/redash/releases)
+Step 2: Download and install Redis v.4.0.11 (https://redis.io/download)
+Step 3: Download and install PostgreSQL v10 - also create redash database
+Step 4: Download and install PgAdmin 4 (Optional)
+Step 5: Download and install Python v2.7.15
+Step 6: Run following commands to install dependencies (https://redash.io/help/open-source/dev-guide/setup):
+
+sudo pip install -r requirements.txt -r requirements_dev.txt
+sudo npm install
+sudo npm run build
+sudo bin/run ./manage.py check_settings
+sudo bin/run ./manage.py database create_tables
+bin/run ./manage.py runserver --debugger --reload
+
+for production run: npm run start
+
+Note: Please read the logs carefully and then proceed to next step. Make sure each step is performed successfully without any error.
+
+https://github.com/dwyl/learn-redash
