@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
 
@@ -11,11 +11,18 @@ export class DatasourceWidgetService {
 
 	private baseUrl = '/api/dashboards';
 	private nodeApi = '/node-api/widgets';
+	callToWidgetServiceMethodSource = new Subject<any>();
 
 	constructor(
 		private http: HttpClient,
 		private authService: AuthService
-		) { }
+	) { }
+
+
+	callServiceCmpMethod() {
+		console.log('Service method called');
+		this.callToWidgetServiceMethodSource.next();
+	}
 
 	loadWidgets(): Observable<any> {
 		return this.http.get(`${this.nodeApi}/all`);

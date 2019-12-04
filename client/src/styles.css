@@ -18,6 +18,9 @@
   font-weight: normal;
 }
 
+/* NSIA Primary Color: #282560 */
+/* NSIA Secondary Color: #01a79b */
+
 /* width */
 ::-webkit-scrollbar {
   width: 5px;
@@ -252,4 +255,25 @@
 
 .title-actions button {
   margin: 0 .5em;
+}
+
+.my-owl-nav {
+  padding: 10px !important;
+  background-color: #01a79b !important;
+  transition: background .3s ease-in-out;
+  border-radius: 60%;
+  color: #ffffff !important;
+}
+
+.my-owl-nav:hover {
+  background-color: #282560 !important;
+}
+
+.owl-carousel .owl-nav button {
+  margin: 0 5px;
+  outline: none !important;
+}
+
+.owl-carousel .owl-nav {
+  padding-top: .5rem !important;
 }

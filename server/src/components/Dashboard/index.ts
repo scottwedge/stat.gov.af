@@ -3,6 +3,8 @@ import { HttpError } from '../../config/error';
 import { IDashboardModel } from './model';
 import { NextFunction, Request, Response } from 'express';
 import WidgetService from '../Widget/service';
+import { IWidgetModel } from '../Widget/model';
+import * as _ from 'lodash';
 
 /**
  * @export
@@ -32,24 +34,38 @@ export async function findOne(req: Request, res: Response, next: NextFunction): 
     try {
         const query: IDashboardModel = await DashboardService.findOne(req.params.id);
 
-        const widgetIds = query.widgets;
+        const widgetIds: any = query.widgets;
+
         console.log('Widget IDs: ', widgetIds);
 
         // Fetch widgets for the current dashboard
-        const widgets = await WidgetService.findAllByIds(widgetIds);
-
-        console.log('widgets are: ', widgets);
+        let widgets: IWidgetModel[] = await WidgetService.findAllByIds(widgetIds);
 
 
+        // Send only the grid for this specific dashboard
+        widgets = widgets.map((w: any) => {
+            const wGrid: any = w.gridstack.filter((wg: any) => wg.dashboardId === req.params.id
+            )[0].gridstack;
+
+            // It wont work if we copy or clone it directly, first make it string and then copy it
+            let t: any = JSON.stringify(w);
+
+            t = JSON.parse(t);
+
+            // send only grid to match the general method of grid rendering in the frontend
+            t.gridstack = wGrid;
+
+            return t;
+        });
 
 
         res.status(200).json({
+            widgets,
             id: query.id,
             user: query.user,
             name: query.name,
             layout: query.layout,
             createdAt: query.createdAt,
-            widgets
         });
     } catch (error) {
         next(new HttpError(error.message.status, error.message));
@@ -123,7 +139,7 @@ export async function findByUserId(req: Request, res: Response, next: NextFuncti
         const userId = req.params.id;
 
         const dashboards: IDashboardModel[] = await DashboardService.findAllByUserId(userId);
-        
+
         console.log('req params: ', req.params.id);
 
         res.status(200).json({

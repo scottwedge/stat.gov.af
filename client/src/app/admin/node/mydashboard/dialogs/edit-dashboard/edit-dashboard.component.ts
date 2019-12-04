@@ -26,6 +26,7 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 	originalDashboard;
 	// @Input('isReadOnly') readonly;
 	readOnly;
+	allWidgetsLoaded = false;
 
 
 	constructor(
@@ -39,6 +40,8 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 
 		this.recordId = history.state.recordId;
 		this.readOnly = history.state.readonly;
+
+		this.allWidgets = [];
 
 		console.log('Read Only: ', this.readOnly);
 
@@ -186,14 +189,24 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 		// }
 		this.loading = true;
 
+		if (!this.allWidgetsLoaded) {
 
-		this.datasourceWidgetService.loadWidgetsByUserId().subscribe((data) => {
-			this.allWidgets = data;
-			console.log('all widgets are:', this.allWidgets);
+			this.datasourceWidgetService.loadWidgetsByUserId().subscribe((data) => {
+				this.allWidgets = data;
+				this.allWidgetsLoaded = true;
+				$(document).find('.widgets-list').select2({
+					width: '60%'
+				});
+				console.log('all widgets are:', this.allWidgets);
+				this.loading = false;
+				$('#createModal').modal();
+				this.showCreateModal = true;
+			});
+		} else {
 			this.loading = false;
 			$('#createModal').modal();
 			this.showCreateModal = true;
-		});
+		}
 
 	}
 
@@ -221,6 +234,18 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 			});
 
 	}
+
+	createWidget() {
+		$('#createModal').modal('toggle');
+		this.showCreateModal = false;
+
+	}
+
+	saveCharts() {
+
+	}
+
+
 
 
 

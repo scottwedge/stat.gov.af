@@ -38,6 +38,6 @@ export class DatasourceDashboardService {
 	}
 
 	update(data, id): Observable<any> {
-		return this.http.put(`${this.nodeApi}/update/` + id, data);
+		return this.http.put(`${this.nodeApi}/update/${id}`, data);
 	}
 }

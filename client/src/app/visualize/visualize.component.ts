@@ -197,6 +197,11 @@ export class VisualizeComponent implements OnInit, AfterViewInit {
 	}
 
 	ngOnInit() {
+
+		const recordId = history.state.recordId;
+
+		console.log('record ID: ', recordId);
+
 		this.plotlyElement = this.plotlyChartContainer;
 		this.Plotly = this.plotlyElement.plotly;
 		// this.plotlyElement.updatePlot();
@@ -639,12 +644,12 @@ export class VisualizeComponent implements OnInit, AfterViewInit {
 		this.charts = JSON.parse(localStorage.getItem('charts'));
 		const chartLength = this.charts.length;
 		if (chartLength === 0) {
-			chart['id'] = 1;
+			chart['_id'] = 1;
 			this.charts.push(chart);
 			localStorage.setItem('chartId', JSON.stringify(1));
 		} else {
-			chart['id'] = (Number(localStorage.getItem('chartId'))) + 1;
-			if (chart['id'] % 2 === 0) {
+			chart['_id'] = (Number(localStorage.getItem('chartId'))) + 1;
+			if (chart['_id'] % 2 === 0) {
 				chart['gridstack'].col = 6;
 			} else {
 				chart['gridstack'].col = 0;
@@ -655,7 +660,7 @@ export class VisualizeComponent implements OnInit, AfterViewInit {
 			} else {
 				chart['gridstack'].row = charObj.gridstack.row;
 			}
-			localStorage.setItem('chartId', JSON.stringify(chart['id']));
+			localStorage.setItem('chartId', JSON.stringify(chart['_id']));
 			this.charts.push(chart);
 		}
 		localStorage.setItem('charts', JSON.stringify(this.charts));

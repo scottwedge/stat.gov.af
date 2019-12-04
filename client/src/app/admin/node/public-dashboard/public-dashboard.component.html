@@ -59,7 +59,7 @@
       <div *ngIf="charts.length; else nodata">
 
         <div class="grid-stack" data-gs-width="12" data-gs-animate="yes">
-          <div class="grid-stack-item" *ngFor="let chart of charts" [id]="chart.id"
+          <div class="grid-stack-item" *ngFor="let chart of charts" [id]="chart._id"
             [attr.data-gs-x]="chart.gridstack.col" [attr.data-gs-y]="chart.gridstack.row"
             [attr.data-gs-width]="chart.gridstack.sizeX" [attr.data-gs-height]="chart.gridstack.sizeY">
             <div class="grid-stack-item-content card">

@@ -56,11 +56,11 @@ body.rtl .sidebar {
 }
 
 .rtl .widget-visualization li.pull-right {
-    float: left!important;
+    float: left !important;
 }
 
 .rtl .widget-visualization .footer i.pull-right {
-    float: left!important;
+    float: left !important;
 }
 
 /* html {
@@ -2265,7 +2265,7 @@ caption {
 }
 
 .rtl .navbar-fixed {
-    left: 0 !important; 
+    left: 0 !important;
     right: auto;
 }
 
@@ -3049,7 +3049,7 @@ caption {
     float: right;
 }
 
-.rtl  .sidebar-wrapper .user .info a b {
+.rtl .sidebar-wrapper .user .info a b {
     left: 0;
     right: auto;
 }
@@ -3069,10 +3069,10 @@ caption {
     right: 0px;
 }
 
-.rtl .left-150{
+.rtl .left-150 {
     left: 10% !important;
     /* right: 250% !important; */
-	transition: left .2s ease-in-out ;
+    transition: left .2s ease-in-out;
     margin-right: -24%;
 
 }
@@ -3085,22 +3085,32 @@ caption {
     z-index: 2000;
     left: auto;
     right: 22% !important;
-    transition: right .2s ease-in-out ;
-    font-size:16px;
+    transition: right .2s ease-in-out;
+    font-size: 16px;
     color: #000000;
 }
-.rtl .wrapper, body {
+
+.rtl .wrapper,
+body {
     min-height: 100% !important;
     position: static !important;
 }
-.rtl .plus-icon{
+
+.rtl .plus-icon {
     float: right !important;
     margin-left: 3% !important;
 }
-.rtl .filters span{
+
+.rtl .filters span {
     float: right;
     margin-right: 3px;
 }
+
 /* .rtl .title-actions{
     float: left !important;
 }  */
+
+.rtl #main-top .f-image .wrapper {
+    margin-left: -40px !important;
+    margin-right: auto !important;
+}

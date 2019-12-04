@@ -1,8 +1,9 @@
-import { Component, Input, OnInit, SimpleChange, SimpleChanges, ViewChild, ElementRef, OnChanges, AfterViewInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core'
 import { Globals } from '../core/_helpers/globals';
 import { CookieService } from 'ngx-cookie-service';
 import { DatatablesService } from '../services/datatables.service';
+import { Router } from '@angular/router';
 
 
 declare var $: any;
@@ -21,6 +22,22 @@ export class HomeComponent implements OnInit {
 	languageBadge;
 	selectEnvironment;
 	totalDashboards = 0;
+	lang;
+	owl;
+
+	dashboards;
+	bgColors = [
+		'#83D191',
+		'#FF8C8C',
+		'#EDFF7C',
+		'#FF5E93',
+		'#77C2FF',
+		'#FF6459',
+		'#FF77C2',
+		'#FFB791',
+		'#30FFC7',
+		'#DDFFA8'
+	]
 
 	availLangs = [
 		{ name: 'English', value: 'en', dir: 'ltr' },
@@ -28,22 +45,58 @@ export class HomeComponent implements OnInit {
 		{ name: 'دری', value: 'dr', dir: 'rtl' }
 	];
 
+	features = [
+		{
+			icon: 'dashboard.svg',
+			title: 'first_feature_title',
+			details: 'first_feature_description'
+		}, {
+			icon: 'bar-chart.svg',
+			title: 'second_feature_title',
+			details: 'second_feature_description'
+		}, {
+			icon: 'database.svg',
+			title: 'third_feature_title',
+			details: 'third_feature_description'
+		}, {
+			icon: 'translate.svg',
+			title: 'fourth_feature_title',
+			details: 'fourth_feature_description'
+		}, {
+			icon: 'share.svg',
+			title: 'fifth_feature_title',
+			details: 'fifth_feature_description'
+		}, {
+			icon: 'time-place.svg',
+			title: 'sixth_feature_title',
+			details: 'sixth_feature_description'
+		}
+	];
+
 	currentDate = new Date();
 	constructor(private translate: TranslateService,
 		public globals: Globals,
 		private cookieService: CookieService,
-		private datatablesService: DatatablesService) {
+		private datatablesService: DatatablesService,
+		private router: Router,
+		private cdref: ChangeDetectorRef
+	) { }
 
-		
-	}
 
-	get widgetCount() {
-		if (this.globals.dashboardList && this.globals.dashboardList.length > 0) {
-			return this.globals.dashboardList.length;
+	ngOnInit() {
+		if (this.cookieService.get('lang')) {
+			this.lang = this.cookieService.get('lang');
 		} else {
-			return 0;
+			this.lang = 'en';
 		}
 	}
+
+	gotoDashboard(slug) {
+		console.log('slug:', slug);
+		this.router.navigate([`/dashboard/${slug}`]);
+	}
+
+
 
 	getCurrentEnvironment() {
 		if (this.globals.principal) {
@@ -56,10 +109,16 @@ export class HomeComponent implements OnInit {
 
 	}
 
-	ngOnInit() { }
+	getColor() {
+		const index = (Math.random() * 9).toFixed();
+		console.log('Index', index);
+		return this.bgColors[index];
+
+	}
+
 
 	ngAfterViewInit() {
-		this.globals.isDashboardListUpdated.subscribe((value) => { 
+		this.globals.isDashboardListUpdated.subscribe((value) => {
 			console.log(value);
 			if (true === value) {
 				setTimeout(() => {
@@ -78,100 +137,67 @@ export class HomeComponent implements OnInit {
 			this.totalDashboards = 0;
 		}
 
-		// counter
-		$('.counter-count').each(function () {
-			$(this).prop('Counter', 0).animate({
-				Counter: $(this).text()
-			}, {
-				duration: 10000,
-				easing: 'swing',
-				step: function (now) {
-					$(this).text(Math.ceil(now));
+		console.log('Dashboard List: ', this.globals.dashboardList);
+
+		this.dashboards = [];
+
+		this.globals.dashboardList.map(gd => {
+			const t = {
+				name: JSON.parse(gd.name),
+				slug: gd.slug,
+				tags: gd.tags.map(tg => {
+					return JSON.parse(tg)
+				}),
+				bgColor: this.getColor()
+			}
+
+			this.dashboards.push(t);
+		});
+
+		console.log('dasboards: ', this.dashboards);
+
+		const that = this;
+
+		// Initialize carousel
+		$(document).ready(function () {
+
+			that.owl = $('.owl-carousel').owlCarousel({
+				loop: true,
+				margin: 10,
+				nav: true,
+				// tslint:disable-next-line: max-line-length
+				navText: ['<div class="my-owl-nav"> <span class="fa fa-arrow-left"></span></div>', '<div class="my-owl-nav"> <span class="fa fa-arrow-right"></span></div>'],
+				dots: true,
+				autoplay: true,
+				autoplaySpeed: 800,
+				pagination: true,
+				responsive: {
+					0: {
+						items: 1
+					},
+					600: {
+						items: 3
+					},
+					1000: {
+						items: 5
+					}
 				}
 			});
-
-
 		});
 
 		this.selectEnvironment = this.getCurrentEnvironment();
 
-		//this.setupLanguage();
-
 		this.translate.onLangChange.subscribe((event) => {
-			console.log('Change language called');
-			const selectedLang = event.lang;
-			if (selectedLang !== 'en') {
-				$('.feature-back').addClass("text-right");
-				$('.feature-back').css("text-align", "right");
-			}
-			else {
-				$('.feature-back').removeClass("text-right");
-				$('.feature-back').css("text-align", "left");
-			}
-			this.languageBadge = selectedLang;
+			this.lang = event.lang;
+			this.cdref.detectChanges();
+			console.log('In home', this.lang);
 
-			this.datatablesService.callServiceCmpMethod(selectedLang);
-			// this.navbarRTL(selectedLang);
-		});
-
-
-		// $(document).ready(function() {
-		// 	$('#media').carousel({
-		// 	  pause: true,
-		// 	  interval: false,
-		// 	});
-		// });
-		$('#myCarousel').carousel({
-			interval: 400000
-		});
-
-
-		$('.carousel .item').each(function () {
-			var next = $(this).next();
-			if (!next.length) {
-				next = $(this).siblings(':first');
-			}
-			next.children(':first-child').clone().appendTo($(this));
-
-			for (var i = 0; i < 4; i++) {
-				next = next.next();
-				if (!next.length) {
-					next = $(this).siblings(':first');
-				}
-
-				next.children(':first-child').clone().appendTo($(this));
-			}
+			// In order to avoid copy by reference;
+			this.owl.trigger('refresh.owl.carousel');
 		});
 
 	}
 
-	private setupLanguage() {
-		this.translate.addLangs(['en', 'ps', 'dr']);
-
-		let browserLang = this.cookieService.get('lang');
-		if (browserLang) {
-			this.globals.lang = browserLang;
-		} else {
-			this.cookieService.set('lang', this.globals.lang);
-			browserLang = this.globals.lang;
-		}
-
-		this.languageBadge = browserLang;
-		this.translate.use(browserLang.match(/en|ps|dr/) ? browserLang : 'en');
-	}
-
-	getTitleByLang(title) {
-		try {
-			let titleObj = JSON.parse(title);
-			if (titleObj instanceof Object) {
-
-				return titleObj[localStorage.getItem('lang')];
-			}
-			return title;
-		} catch (e) {
-			return title;
-		}
-	}
 
 }
 

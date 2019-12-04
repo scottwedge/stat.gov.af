@@ -1,217 +1,96 @@
 <section id="main-top">
 	<div class="container-fluid">
-		<div class="col-md-offset-3 col-md-6 text-center">
-			<h1>{{ 'main_title' | translate }}</h1>
-			<p>{{"main_sub_title" | translate}}</p>
-		</div>
-	</div>
-</section>
-<section id="counter">
-	<div class="counter">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-					<!-- <div class="employees">
-						<p class="counter-count">879</p>
-						<p class="employee-p">{{ 'data_point' | translate }}</p>
-					</div> -->
-				</div>
-
-				<!-- <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-					<div class="customer">
-						<p class="counter-count">{{ totalDashboards }}</p>
-						<p class="customer-p">{{ 'DASHBOARDS' | translate }}</p>
-					</div>
-				</div> -->
-
-				<!-- <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-					<div class="design">
-						<p class="counter-count">{{ widgetCount }}</p>
-						<p class="design-p">{{ 'WIDGETS' | translate }}</p>
-					</div>
-				</div> -->
-
-				<!-- <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-					<div class="order">
-						<p class="counter-count">652</p>
-						<p class="order-p">{{ 'data_set' | translate }}</p>
-					</div>
-				</div> -->
-			</div>
-		</div>
-	</div>
-</section>
-<section id="main-content">
-	<div class="container">
-		
-					<h3>{{ 'DASHBOARDS' | translate }}</h3>
-					<hr>
-				<div class="carousel slide" id="myCarousel">
-					<div class="carousel-inner">
-						<div class="item active">
-							<div class="col-md-2 card">
-									<a href="#" class="dataset-name"
-									[routerLink]="['/dashboard']">{{ 'HOME' | titlecase  | translate }}</a>
-									<div class="small m-t-xs">
-										<small class="text-muted"></small>
-									</div>
-							</div>
-						</div>
-
-						<div class="item" *ngFor="let dashboard of globals.dashboardList">
-							<div class="col-md-2 card">
-									<a href="#" class="dataset-name"
-									[routerLink]="['/dashboard', dashboard.slug]">{{ getTitleByLang(dashboard.slug) | titlecase  | translate }}</a>
-									<div class="small m-t-xs">
-										<small class="text-muted"
-											*ngFor="let tag of dashboard.tags">{{ getTitleByLang(tag) | titlecase }}</small>
-									</div> 
-							</div>
-						</div>
-						
-					</div> 
-					<a class="left carousel-control" href="#myCarousel" data-slide="prev"><i
-							class="fa fa-arrow-left"></i></a>
-					<a class="right carousel-control" href="#myCarousel" data-slide="next"><i
-							class="fa fa-arrow-right"></i></a>
-
-				</div>
-		
-	</div>
-</section>
-<section class="bg-light text-center breadcrumb parallax">
-	<div class="container-fluid">
-		<div style="padding:100px;">
-			<h1 class="text-center" style="font-family: 'landing-font'">{{ 'what_make_us_unique' | translate }}!</h1>
-		</div>
-	</div>
-</section>
-<section id="feature-section">
-	<div class="container">
 		<div class="row">
-			<!--feature-1-->
-			<div class="col-lg-4">
-				<div class="our-feature-main">
-
-					<div class="feature-front">
-						
-						<i class="fa fa-dashboard"></i>
-						<h3>{{ 'first_feature_title' | translate }}</h3>
-					</div>
-
-					<div class="feature-back">
-						<span>
-							{{ 'first_feature_description' | translate }}
-						</span>
-					</div>
-
+			<div class="col-lg-7 col-md-7 col-sm-12">
+				<div class="titles">
+					<h1 class="m-title">{{ 'main_title' | translate }}</h1>
+					<p class="s-title">{{"main_sub_title" | translate}}</p>
 				</div>
 			</div>
-			<!--feature-1-->
-
-			<!--feature-2-->
-			<div class="col-lg-4">
-				<div class="our-feature-main">
-
-					<div class="feature-front">
-						
-						<i class="fa fa-bar-chart"></i>
-						<h3>{{ 'second_feature_title' | translate }}</h3>
-					</div>
-
-					<div class="feature-back">
-						<span>
-							{{ 'second_feature_description' | translate }}
-						</span>
-					</div>
-
+			<div class="col-lg-5 col-md-5 col-sm-12 f-image">
+				<div class="wrapper">
+					<img src="../../assets/img/stat-slider.png" alt="">
 				</div>
 			</div>
-			<!--feature-2-->
-
-			<!--feature-3-->
-			<div class="col-lg-4">
-				<div class="our-feature-main">
-
-					<div class="feature-front">
-						<i class="fa fa-database"></i>
-						<h3>{{ 'third_feature_title' | translate }}</h3>
-					</div>
-
-					<div class="feature-back">
-						<span>
-							{{ 'third_feature_description' | translate }}
-						</span>
-					</div>
-
-				</div>
+		</div>
+	
+	</div>
+</section>
+<section class="intro-section">
+	<div class="row">
+		<div class="col-md-6">
+			<div class="intro-image">
+				<img src="../../assets/img/power-ds-img.png" alt="">
 			</div>
-			<!--feature-3-->
-
-			<!--feature-4-->
-			<div class="col-lg-4">
-				<div class="our-feature-main">
-
-					<div class="feature-front">
-							<i class="fa fa-language"></i>
-						<h3>{{ 'fourth_feature_title' | translate }}</h3>
-
-					</div>
-
-					<div class="feature-back">
-						<span>
-							{{ 'fourth_feature_description' | translate }}
-						</span>
-					</div>
-
-				</div>
+		</div>
+		<div class="col-md-6">
+			<h2>{{ 'WHO_WE_ARE' | translate }}</h2>
+			<div class="introduction">
+				<span>
+					{{ 'STAT_INTRO' | translate }}
+				</span>
 			</div>
-			<!--feature-4-->
-
-			<!--feature-5-->
-			<div class="col-lg-4">
-				<div class="our-feature-main">
-
-					<div class="feature-front">
-						<i class="fa fa-share-alt"></i>
-						<h3>{{ 'fifth_feature_title' | translate }}</h3>
-					</div>
-
-					<div class="feature-back">
-						<span>
-							{{ 'fifth_feature_description' | translate }}
-						</span>
-					</div>
-
-				</div>
-			</div>
-			<!--feature-5-->
-
-			<!--feature-6-->
-			<div class="col-lg-4">
-				<div class="our-feature-main">
-					<div class="feature-front">
-							<i class="fa fa-map-marker" aria-hidden="true"></i>
-						<h3>{{ 'sixth_feature_title' | translate }}</h3>
-					</div>
-
-					<div class="feature-back">
-						<span>
-							{{ 'sixth_feature_description' | translate }}
-						</span>
-					</div>
-
-				</div>
-			</div>
-			<!--feature-6-->
 		</div>
 	</div>
+</section>
+<hr>
+<section class="feature_area container">
+	<div class="container-fluid">
+		<div style="padding:60px;">
+			<h3 class="text-center" style="font-family: 'landing-font'">{{ 'what_make_us_unique' | translate }}!</h3>
+		</div>
+	</div>
+
+	<div class="p_left_item_inner">
+		<div class="p_item" *ngFor="let f of features">
+			<div class="media">
+				<div class="media-left">
+					<img [src]="'../../assets/img/icon/' + f.icon" alt="">
+				</div>
+				<div class="media-body">
+					<h4>{{ f.title | translate }}</h4>
+					<p>{{ f.details | translate }}</p>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</section>
+<hr>
+<section id="dashboard-content">
+	<div class="container-fluid text-center">
+
+		<h3 class="ds-name">{{ 'DASHBOARDS' | translate }}</h3>
+
+		<div class="owl-carousel owl-theme" *ngIf="dashboards" dir="ltr">
+			<div class="item" *ngFor="let d of dashboards">
+				<div class="card" [ngStyle]="{ 'background-color': d.bgColor}">
+					<div class="overlay">
+						<div class="content">
+							<h4 class="d-title">{{ d.name[lang] }}</h4>
+							<div class="tags">
+								<span *ngFor="let t of d.tags" class="badge">{{ t[lang] }}</span>
+							</div>
+							<button class="btn btn-sm btn-fill btn-danger view-d"
+								(click)="gotoDashboard(d.slug)">{{ 'VIEW' | translate }}</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</section>
+
+<section id="feature-section">
 </section>
 <!-- FOOTER -->
-<footer class="footer footer-transparent">
+<footer class="footer">
 	<div class="container text-center">
 		<p class="copyright ">
-			&copy; {{currentDate | date: 'yyyy'}} <a href="http://stat.gov.af">STAT.GOV.AF</a>, made for data visulaizaiton
+			&copy; {{currentDate | date: 'yyyy'}} <a href="http://stat.gov.af">stat.gov.af, </a> made for data
+			visulaizaiton
 		</p>
 	</div>
 </footer>

@@ -6,6 +6,7 @@ declare var $: any;
 import { GridStackItem, GridStackOptions, GridStackItemComponent, GridStackComponent } from 'ng4-gridstack'
 import { Dashboard, dashboardGridOptions } from '../../../models/dashboard';
 import { Globals } from 'app/core';
+import { each, debounce, isArray, isObject, delay } from 'lodash';
 import { AuthService } from 'app/services/auth.service';
 import { DatasourceWidgetService } from 'app/services/datasource.widget.service';
 import { DatasourceDashboard } from 'app/models/datasource.dashboard';
@@ -31,7 +32,12 @@ export class PublicDashboardComponent implements OnInit {
 	isLoading: boolean;
 	showGrid = false;
 	widgetIds;
+	plotlyElement;
+	Plotly;
+	handleResize;
 	dashboardId: any;
+	@ViewChild('plotlyChartContainer', { static: true }) plotlyChartContainer: ElementRef;
+
 	constructor(
 		private cd: ChangeDetectorRef,
 		public globals: Globals,
@@ -50,7 +56,11 @@ export class PublicDashboardComponent implements OnInit {
 		this.charts = [];
 		this.dashboardName = '';
 
+
+
 		this.fetchDataFromLocalStorage();
+
+
 
 
 		this.initializeRegistrationForm();
@@ -59,6 +69,28 @@ export class PublicDashboardComponent implements OnInit {
 
 
 	}
+
+	initPlotly() {
+
+		this.plotlyElement = this.plotlyChartContainer;
+		console.log('fds', this.plotlyChartContainer);
+
+		this.Plotly = this.plotlyElement.plotly;
+		// this.plotlyElement.updatePlot();
+		this.plotlyElement = this.plotlyElement.plotEl.nativeElement;
+
+		this.handleResize = debounce(this.updateChartDimensions, 250);
+
+	}
+
+	updateChartDimensions() {
+		this.Plotly.getPlotly().relayout(this.plotlyElement, {
+			'xaxis.autorange': true,
+			'yaxis.autorange': true
+		});
+		// this.Plotly.update(this.plotlyElement, this.layout);
+	}
+
 
 
 	changeTab(vl) {
@@ -107,7 +139,8 @@ export class PublicDashboardComponent implements OnInit {
 			if (localStorage.getItem('charts')) {
 				this.charts = JSON.parse(localStorage.getItem('charts'));
 				setTimeout(() => {
-					this.initGridStack()
+					this.initGridStack();
+					// this.initPlotly();
 				}, 10);
 			}
 		}
@@ -116,7 +149,7 @@ export class PublicDashboardComponent implements OnInit {
 	checkUserLoggedIn() {
 		if (this.authService.isLoggedIn()) {
 			console.log('Saving Visulaziation');
-			this.saveCharts();
+			this.getDashboardName();
 		} else {
 			this.showSignUpPopUp();
 		}
@@ -144,7 +177,7 @@ export class PublicDashboardComponent implements OnInit {
 			this.authService.setLoggedInUserId(res.user_id);
 
 			// Save the chart
-			this.saveCharts();
+			this.getDashboardName();
 
 		}, err => {
 			console.log('error: ', err);
@@ -164,15 +197,18 @@ export class PublicDashboardComponent implements OnInit {
 			'password': this.registerForm.get('password').value
 		};
 
-		this.authService.createUser(formJson).subscribe(res => {
+		this.authService.createUser(formJson).subscribe((res: any) => {
 			console.log('registeration success: ', res);
 			// Hide the modal back
 			$('#signupModal').modal('hide');
 			this.loginForm.reset({});
 			this.registerForm.reset({});
 
+			this.authService.saveToken(res.token);
+			this.authService.setLoggedInUserId(res.user_id);
+
 			// Save the chart
-			this.saveCharts();
+			this.getDashboardName();
 
 		}, err => {
 			console.log('error: ', err);
@@ -192,12 +228,8 @@ export class PublicDashboardComponent implements OnInit {
 	saveNewGridAttributes(elem) {
 
 		const chartId = $(elem).attr('id');
-		console.log('charId: ', chartId);
 		this.charts.map(chart => {
-			if (chart.id === Number(chartId)) {
-				console.log('this id matches', chartId);
-				console.log($(elem).attr('data-gs-x'));
-				console.log('Element is : ', elem);
+			if (chart._id === Number(chartId)) {
 
 				chart.gridstack.col = Number($(elem).attr('data-gs-x'));
 				chart.gridstack.row = Number($(elem).attr('data-gs-y'));
@@ -209,7 +241,6 @@ export class PublicDashboardComponent implements OnInit {
 			return chart;
 		});
 
-		console.log(this.charts);
 
 		localStorage.setItem('charts', JSON.stringify(this.charts));
 	}
@@ -234,8 +265,9 @@ export class PublicDashboardComponent implements OnInit {
 		const that = this;
 
 		$('.grid-stack').on('gsresizestop', function (event, elem) {
-			console.log('resize');
+			// console.log('resize', elem);
 			that.saveNewGridAttributes(elem);
+			// that.handleResize();
 		});
 
 		$('.grid-stack').on('dragstop', function (event, ui) {
@@ -251,6 +283,10 @@ export class PublicDashboardComponent implements OnInit {
 
 
 
+
+	}
+
+	autorangeChart() {
 
 	}
 
@@ -274,7 +310,7 @@ export class PublicDashboardComponent implements OnInit {
 		obj.name = this.dashboardName;
 		obj.user = this.authService.getLoggedInUserId();
 		obj.layout = null;
-		obj.widgets = this.widgetIds;
+		obj.widgets = [];
 
 
 
@@ -285,6 +321,37 @@ export class PublicDashboardComponent implements OnInit {
 			console.log('server response: ', response);
 			const msg = 'Record successfully created';
 			this.dashboardId = response._id;
+			Swal({
+				title: this.translate.instant('WELL_DONE'),
+				text: this.translate.instant('WIDGET_SUBMITTED'),
+				buttonsStyling: false,
+				confirmButtonClass: 'btn btn-fill btn-success',
+				type: 'success'
+			}).catch(Swal.noop)
+			this.isLoading = false;
+			this.saveCharts();
+		}, (err) => {
+			const msg = 'There was an error creating record';
+			this.showNotification('top', 'center', msg, 'danger', 'pe-7s-attention');
+		});
+	}
+
+
+	updateDashboard() {
+		const obj = new DatasourceDashboard();
+		obj.name = this.dashboardName;
+		obj.user = this.authService.getLoggedInUserId();
+		obj.layout = null;
+		obj.widgets = this.widgetIds;
+
+		console.log('Dashboard Id: ', this.dashboardId);
+
+		// this.newRecord.permissions = JSON.stringify(permissions);
+
+		this.isLoading = true;
+		this.datasourceDashboardService.update(obj, this.dashboardId).subscribe((response) => {
+			console.log('server response: ', response);
+			const msg = 'Record successfully created';
 			Swal({
 				title: this.translate.instant('WELL_DONE'),
 				text: this.translate.instant('WIDGET_SUBMITTED'),
@@ -314,8 +381,12 @@ export class PublicDashboardComponent implements OnInit {
 			chart.layout = JSON.stringify(chart.layout);
 			chart.config = JSON.stringify(chart.config);
 			chart.data = JSON.stringify(chart.data);
-			chart.gridstack = JSON.stringify(chart.gridstack);
-			delete chart['id'];
+			chart.gridstack = JSON.stringify(
+				[{
+					dashboardId: this.dashboardId,
+					gridstack: chart.gridstack
+				}]);
+			delete chart['_id'];
 			delete chart['saved'];
 			delete chart['filteredData'];
 			chart.user = this.authService.getLoggedInUserId();
@@ -335,7 +406,7 @@ export class PublicDashboardComponent implements OnInit {
 					return chart;
 				});
 
-				this.getDashboardName();
+				this.updateDashboard();
 
 			}, err => {
 				console.log('err: ', err);
@@ -373,7 +444,7 @@ export class PublicDashboardComponent implements OnInit {
 	removeChart(chartId) {
 		this.charts = JSON.parse(localStorage.getItem('charts'));
 		this.charts.forEach((el, i) => {
-			if (el.id === chartId) {
+			if (el._id === chartId) {
 				this.charts.splice(i, 1);
 			}
 		});
