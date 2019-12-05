@@ -91,6 +91,10 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 			acceptWidgets: '.grid-stack-item'
 		});
 
+		document.querySelectorAll('[data-title="Autoscale"]').forEach(el => {
+			(<HTMLElement>el).click()
+		});
+
 		this.initGridstackEvents();
 	}
 
@@ -166,6 +170,13 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 		$('.grid-stack').on('gsresizestop', function (event, elem) {
 			console.log('resize');
 			that.saveNewGridAttributes(elem);
+			const elId = $(elem).attr('id');
+
+			console.log(elId);
+			setTimeout(() => {
+				const dElement = (<HTMLElement>document.getElementById(elId));
+				(<HTMLElement>dElement.querySelector('[data-title="Autoscale"]')).click();
+			}, 250);
 		});
 
 		$('.grid-stack').on('dragstop', function (event, ui) {

@@ -160,6 +160,9 @@
   "LOGIN-TO-SYSTEM": "Login Into System",
   "SAVE-CHART-LOGIN": "Please register in to the system to save this chart",
 
+  "STAT_SLOGAN": "Statistics Portal for Afghanistan",
+  "STAT_SLOGAN_2": "Register for free and experience the dashboard today",
+
   "USERNAME": "Username",
   "PASSWORD": "Password",
   "NOACCOUNT": "Don't have account?",
@@ -169,7 +172,8 @@
   "ENTEREMAIL": "Enter email",
   "PASSWORDCONF": "Password Confirmation",
   "PASSWORDMATCH": "passwords should match",
-  "HAVEACCOUNT": "Have account?",
+  "HAVEACCOUNT": "Already have account?",
+  "CREATE_FREE_ACCOUNT": "Create Free Account",
   "NODATA": "NO DATA",
   "SAVE-DASHBOARD": "Save Dashboard",
   "ADD-WIDGET": "Add widget",
@@ -181,6 +185,8 @@
   "RESET-ALL-ALERT": "Are you sure?",
   "CONFIRM-BUTTONT-TEXT": "Yes, Reset it!",
   "REMOVE": "Remove",
+
+  "CHANGE_DATATYPE": "You can change a data type of this column",
 
 
 

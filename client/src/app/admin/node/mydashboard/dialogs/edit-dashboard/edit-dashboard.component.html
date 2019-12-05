@@ -62,7 +62,7 @@
                 <div *ngIf="dashboard">
                     <div *ngIf="dashboard.widgets.length; else nodata">
                         <div>
-                            <div class="grid-stack" data-gs-width="12" data-gs-animate="yes">
+                            <div class="grid-stack" data-gs-width="12" data-gs-animate="yes" id="w-gridstack">
                                 <div class="grid-stack-item" *ngFor="let widget of  dashboard.widgets" [id]="widget._id"
                                     [attr.data-gs-x]="widget.gridstack.col"
                                     [attr.data-gs-y]="widget.gridstack.row"

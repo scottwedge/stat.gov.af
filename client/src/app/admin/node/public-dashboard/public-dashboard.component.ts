@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormBuilder, Validators, FormArray } from '@angular/forms';
 
 declare var $: any;
+// declare var Plotly: any; 
 import { GridStackItem, GridStackOptions, GridStackItemComponent, GridStackComponent } from 'ng4-gridstack'
 import { Dashboard, dashboardGridOptions } from '../../../models/dashboard';
 import { Globals } from 'app/core';
@@ -76,7 +77,7 @@ export class PublicDashboardComponent implements OnInit {
 		console.log('fds', this.plotlyChartContainer);
 
 		this.Plotly = this.plotlyElement.plotly;
-		// this.plotlyElement.updatePlot();
+		this.plotlyElement.updatePlot();
 		this.plotlyElement = this.plotlyElement.plotEl.nativeElement;
 
 		this.handleResize = debounce(this.updateChartDimensions, 250);
@@ -140,6 +141,9 @@ export class PublicDashboardComponent implements OnInit {
 				this.charts = JSON.parse(localStorage.getItem('charts'));
 				setTimeout(() => {
 					this.initGridStack();
+
+					// Autoscale all the charts
+					(<HTMLElement>document.querySelector('[data-title="Autoscale"]')).click();
 					// this.initPlotly();
 				}, 10);
 			}
@@ -268,6 +272,15 @@ export class PublicDashboardComponent implements OnInit {
 			// console.log('resize', elem);
 			that.saveNewGridAttributes(elem);
 			// that.handleResize();
+			// this.Plotly.Plot.resize();
+			const elId = $(elem).attr('id');
+
+			console.log(elId);
+			setTimeout(() => {
+				const dElement = (<HTMLElement>document.getElementById(elId));
+				(<HTMLElement>dElement.querySelector('[data-title="Autoscale"]')).click();
+			}, 250);
+
 		});
 
 		$('.grid-stack').on('dragstop', function (event, ui) {

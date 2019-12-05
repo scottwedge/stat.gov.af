@@ -123,7 +123,7 @@ export class HomeComponent implements OnInit {
 			if (true === value) {
 				setTimeout(() => {
 					this.renderCarousel();
-				}, 2000);
+				}, 200);
 			} else {
 				// do some other stuff
 			}

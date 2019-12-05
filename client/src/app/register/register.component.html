@@ -7,8 +7,8 @@
                 <div class="row">
                     <div class="col-md-8 col-md-offset-2">
                         <div class="header-text">
-                            <h2>Statistics Portal for Afghanistan</h2>
-                            <h4>Register for free and experience the dashboard today</h4>
+                            <h2>{{ 'STAT_SLOGAN' | translate }}</h2>
+                            <h4>{{ 'STAT_SLOGAN_2' | translate }}</h4>
                             <hr />
                         </div>
                     </div>
@@ -56,39 +56,37 @@
                             <div class="card card-plain">
                                 <div class="content">
                                     <div class="form-group">
-                                        <input type="text" placeholder="Your Full Name" class="form-control"
+                                        <input type="text" [placeholder]="'FULLNAME' | translate" class="form-control"
                                             formControlName="fullName">
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" placeholder="Your User Name" class="form-control"
+                                        <input type="text" [placeholder]="'YOURUSERNAME' | translate" class="form-control"
                                             formControlName="username">
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" maxlength="10" placeholder="Mobile Number"
+                                        <input type="text" maxlength="10" [placeholder]="'MOBILENUMBER' | translate"
                                             class="form-control" formControlName="mobileNumber" (keyup)="validateNumber($event.target)">
                                     </div>
                                     <div class="form-group">
-                                        <input type="email" placeholder="Enter email" class="form-control"
+                                        <input type="email" [placeholder]="'ENTEREMAIL' | translate" class="form-control"
                                             formControlName="email">
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" placeholder="Password" class="form-control"
+                                        <input type="password" [placeholder]="'PASSWORD' | translate" class="form-control"
                                             formControlName="password" #pass (keyup)="checkPassword(pass.value, passConf.value)">
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" placeholder="Password Confirmation" class="form-control"
+                                        <input type="password" [placeholder]="'PASSWORDCONF' | translate" class="form-control"
                                             formControlName="passwordConf" #passConf required
                                             (keyup)="checkPassword(pass.value, passConf.value)">
-                                        <small class="text-danger" [hidden]="passwordMatch">passwords should
-                                            match</small>
+                                        <small class="text-danger" [hidden]="passwordMatch">{{ 'PASSWORDMATCH' | translate }}</small>
                                     </div>
                                 </div>
                                 <div class="footer text-center">
-                                    <button type="submit" [disabled]="registerForm.invalid" class="btn btn-fill btn-neutral btn-wd">Create Free
-                                        Account</button>
+                                    <button type="submit" [disabled]="registerForm.invalid" class="btn btn-fill btn-neutral btn-wd">{{ 'CREATE_FREE_ACCOUNT' | translate}}</button>
                                 </div>
-                                <p class="text-center" style="color: white">already have account? <a href=""
-                                        [routerLink]="['/login']">login</a></p>
+                                <p class="text-center" style="color: white">{{ 'HAVEACCOUNT' | translate }} <a href=""
+                                        [routerLink]="['/login']">{{ 'LOGIN' | translate }}</a></p>
                             </div>
                         </form>
                     </div>

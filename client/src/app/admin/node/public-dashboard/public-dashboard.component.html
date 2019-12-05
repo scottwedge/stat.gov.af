@@ -63,8 +63,8 @@
             [attr.data-gs-x]="chart.gridstack.col" [attr.data-gs-y]="chart.gridstack.row"
             [attr.data-gs-width]="chart.gridstack.sizeX" [attr.data-gs-height]="chart.gridstack.sizeY">
             <div class="grid-stack-item-content card">
-              <button class="btn-xs btn btn-danger remove-chart" (click)="removeChart(chart.id)">X</button>
-              <plotly-plot [data]="chart.data" [config]="chart.config" [layout]="chart.layout" [useResizeHandler]="true"
+              <button class="btn-xs btn btn-danger remove-chart" (click)="removeChart(chart._id)">X</button>
+              <plotly-plot [data]="chart.data" [config]="chart.config" [layout]="chart.layout" [id]="chart._id + 'p'" [useResizeHandler]="true"
                 [style]="{position: 'relative', width: '100%', height: '100%'}" #plotlyChartContainer>
               </plotly-plot>
             </div>
