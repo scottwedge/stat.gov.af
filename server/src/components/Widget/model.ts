@@ -79,11 +79,11 @@ const WidgetSchema: Schema = new Schema({
         const configJSON = JSON.parse(widget.config);
         const dataJSON = JSON.parse(widget.data);
         const layoutJSON = JSON.parse(widget.layout);
-        // const gridstackJSON = JSON.parse(widget.gridstack);
+        const gridstackJSON = JSON.parse(widget.gridstack);
         widget.config = configJSON;
         widget.data = dataJSON;
         widget.layout = layoutJSON;
-        // widget.gridstack = gridstackJSON;
+        widget.gridstack = gridstackJSON;
 
         next();
     } catch (error) {

@@ -64,18 +64,17 @@ export class NavbarComponent implements OnInit {
 		private router: Router,
 		public translate: TranslateService,
 		private datatables: DatatablesService,
-		private cookieService:CookieService
+		private cookieService: CookieService
 	) {
 		this.location = location;
 		this.nativeElement = element.nativeElement;
 		this.sidebarVisible = false;
 
 		this.authPrincipal = JSON.parse(localStorage.getItem('authPrincipal'));
-		if(this.authPrincipal)
-		{
+		if (this.authPrincipal) {
 			this.isLoggedIn = this.authPrincipal.authenticated;
 		}
-		
+
 
 		console.log("Perm", this.authPrincipal);
 	}
@@ -83,7 +82,7 @@ export class NavbarComponent implements OnInit {
 	ngOnInit() {
 		if (this.cookieService.get("lang")) {
 			console.log('language: ', this.cookieService.get('lang'));
-			
+
 			this.translate.defaultLang = this.cookieService.get('lang');
 			this.languageBadge = this.cookieService.get('lang');
 		} else {
@@ -152,17 +151,29 @@ export class NavbarComponent implements OnInit {
 			if (data) {
 				this.globals.dashboardList = data['results'];
 				this.globals.isDashboardListUpdated.next(true);
+
+
+				// Bring home to front of the array
+				this.globals.dashboardList.sort((x, y) => { return x.slug === 'home' ? -1 : y.slug === 'home' ? 1 : 0; });
+
 				
-				this.globals.dashboardList = this.globals.dashboardList.filter(function(currentObj){
-					return currentObj.slug !== 'home';
+				// Parse the name of the dashboard to JSON
+
+				this.globals.dashboardList = this.globals.dashboardList.map(d => {
+					d.name = JSON.parse(d.name);
+					return d;
 				});
+
+				// this.globals.dashboardList = this.globals.dashboardList.filter(function(currentObj){
+				// 	return currentObj.slug !== 'home';
+				// });
 
 				data['results'].forEach(item => {
 					if (item.is_default) {
 						this.globals.default_dashboard = item.slug;
 						this.dashboardService.callDefaultMethod();
 					}
-					
+
 
 					// if (item.slug !== 'home') {
 					// 	this.dashboardSlugs.push(item.slug);
@@ -175,12 +186,12 @@ export class NavbarComponent implements OnInit {
 			}
 		});
 
-		console.log("HERE IS DashboardLIST VALUE:",this.globals.dashboardList);
+		console.log("HERE IS DashboardLIST VALUE:", this.globals.dashboardList);
 
 	}
 
 	navigateToMyDashboards() {
-		this.authService.isLoggedIn() ?	this.router.navigate(['/custom/my-dashboards']) : this.router.navigate(['/public-dashboard']);
+		this.authService.isLoggedIn() ? this.router.navigate(['/custom/my-dashboards']) : this.router.navigate(['/public-dashboard']);
 	}
 
 
@@ -222,35 +233,35 @@ export class NavbarComponent implements OnInit {
 	getTitleByLang(title) {
 		try {
 			let titleObj = JSON.parse(title);
-			if(titleObj instanceof Object) {
+			if (titleObj instanceof Object) {
 
 				return titleObj[localStorage.getItem('lang')];
 			}
 			return title;
-		} catch(e) {
+		} catch (e) {
 			return title;
 		}
 	}
 
 	// getTitle() {
-		// var titlee = this.location.prepareExternalUrl(this.location.path());
-		// if (titlee.charAt(0) === '#') {
-		// 	titlee = titlee.slice(1);
-		// }
-		// for (let i = 0; i < this.listTitles.length; i++) {
-		// 	if (this.listTitles[i].type === 'link' && this.listTitles[i].path === titlee) {
-		// 		return this.listTitles[i].title;
-		// 	} else if (this.listTitles[i].type === 'sub') {
-		// 		for (let j = 0; j < this.listTitles[i].children.length; j++) {
-		// 			let subtitle = this.listTitles[i].path + '/' + this.listTitles[i].children[j].path;
-		// 			// console.log(subtitle)
-		// 			// console.log(titlee)
-		// 			if (subtitle === titlee) {
-		// 				return this.listTitles[i].children[j].title;
-		// 			}
-		// 		}
-		// 	}
-		// }
+	// var titlee = this.location.prepareExternalUrl(this.location.path());
+	// if (titlee.charAt(0) === '#') {
+	// 	titlee = titlee.slice(1);
+	// }
+	// for (let i = 0; i < this.listTitles.length; i++) {
+	// 	if (this.listTitles[i].type === 'link' && this.listTitles[i].path === titlee) {
+	// 		return this.listTitles[i].title;
+	// 	} else if (this.listTitles[i].type === 'sub') {
+	// 		for (let j = 0; j < this.listTitles[i].children.length; j++) {
+	// 			let subtitle = this.listTitles[i].path + '/' + this.listTitles[i].children[j].path;
+	// 			// console.log(subtitle)
+	// 			// console.log(titlee)
+	// 			if (subtitle === titlee) {
+	// 				return this.listTitles[i].children[j].title;
+	// 			}
+	// 		}
+	// 	}
+	// }
 	// 	return 'Stat.Gov.af';
 	// }
 

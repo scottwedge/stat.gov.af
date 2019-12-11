@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core'
 import { Globals } from '../core/_helpers/globals';
 import { CookieService } from 'ngx-cookie-service';
@@ -13,7 +13,7 @@ declare var $: any;
 	templateUrl: './home.component.html',
 	styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
 	private listTitles: any[];
 	location: Location;
 	private nativeElement: Node;
@@ -21,9 +21,12 @@ export class HomeComponent implements OnInit {
 	private sidebarVisible: boolean;
 	languageBadge;
 	selectEnvironment;
-	totalDashboards = 0;
+	showDashboards = false;
 	lang;
 	owl;
+	dGlobalsReturned = false;
+	dGlobal$;
+	previousIndex;
 
 	dashboards;
 	bgColors = [
@@ -111,48 +114,40 @@ export class HomeComponent implements OnInit {
 
 	getColor() {
 		const index = (Math.random() * 9).toFixed();
-		console.log('Index', index);
-		return this.bgColors[index];
+		if (this.previousIndex && index === this.previousIndex) {
+			this.getColor();
+		} else {
+			this.previousIndex = index;
+			return this.bgColors[index];
+		}
 
 	}
 
 
 	ngAfterViewInit() {
-		this.globals.isDashboardListUpdated.subscribe((value) => {
-			console.log(value);
-			if (true === value) {
-				setTimeout(() => {
-					this.renderCarousel();
-				}, 200);
-			} else {
-				// do some other stuff
-			}
-		});
+
+		if (this.globals.dashboardList && this.globals.dashboardList.length) {
+			this.renderCarousel();
+		} else {
+			this.dGlobal$ = this.globals.isDashboardListUpdated;
+			this.dGlobal$.subscribe((value) => {
+				console.log(value);
+				this.owl = undefined;
+				if (true === value) {
+					setTimeout(() => {
+						this.renderCarousel();
+					}, 200);
+				} else {
+					// do some other stuff
+				}
+			});
+		}
+
 	}
 
 	renderCarousel() {
-		if (this.globals.dashboardList && this.globals.dashboardList.length > 0) {
-			this.totalDashboards = this.globals.dashboardList.length;
-		} else {
-			this.totalDashboards = 0;
-		}
 
-		console.log('Dashboard List: ', this.globals.dashboardList);
-
-		this.dashboards = [];
-
-		this.globals.dashboardList.map(gd => {
-			const t = {
-				name: JSON.parse(gd.name),
-				slug: gd.slug,
-				tags: gd.tags.map(tg => {
-					return JSON.parse(tg)
-				}),
-				bgColor: this.getColor()
-			}
-
-			this.dashboards.push(t);
-		});
+		this.makeDashboardsReady();
 
 		console.log('dasboards: ', this.dashboards);
 
@@ -161,7 +156,7 @@ export class HomeComponent implements OnInit {
 		// Initialize carousel
 		$(document).ready(function () {
 
-			that.owl = $('.owl-carousel').owlCarousel({
+			this.owl = $(document).find('.owl-carousel').owlCarousel({
 				loop: true,
 				margin: 10,
 				nav: true,
@@ -183,6 +178,9 @@ export class HomeComponent implements OnInit {
 					}
 				}
 			});
+
+			this.owl.trigger('refresh.owl.carousel');
+
 		});
 
 		this.selectEnvironment = this.getCurrentEnvironment();
@@ -192,10 +190,42 @@ export class HomeComponent implements OnInit {
 			this.cdref.detectChanges();
 			console.log('In home', this.lang);
 
-			// In order to avoid copy by reference;
 			this.owl.trigger('refresh.owl.carousel');
 		});
 
+
+	}
+
+	makeDashboardsReady() {
+		this.showDashboards = false;
+
+		this.dashboards = [];
+
+		this.globals.dashboardList.map(gd => {
+			const t = {
+				name: gd.name,
+				slug: gd.slug,
+				tags: gd.tags.map(tg => {
+					return JSON.parse(tg)
+				}),
+				bgColor: this.getColor()
+			}
+
+			this.dashboards.push(t);
+		});
+
+
+		if (this.dashboards.length) {
+			this.showDashboards = true;
+			this.cdref.detectChanges();
+		}
+
+	}
+
+	ngOnDestroy() {
+		if (this.dGlobal$) {
+			this.dGlobal$.unsubscribe();
+		}
 	}
 
 

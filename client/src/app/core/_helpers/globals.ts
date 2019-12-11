@@ -5,17 +5,21 @@ import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class Globals {
-    lang: string = 'en';
-    dashboardList = [];
-    options = {
-        dark: false,
-        boxed: false,
-        collapsed: true,
-        dir: 'ltr'
-    };
-    default_dashboard;
+	lang: string = 'en';
+	dashboardList = [];
+	options = {
+		dark: false,
+		boxed: false,
+		collapsed: true,
+		dir: 'ltr'
+	};
+	default_dashboard;
 
-    principal: Principal = new Principal(null, [], [], [], null, null);
+	principal: Principal = new Principal(null, [], [], [], null, null);
 
-    public isDashboardListUpdated: BehaviorSubject<boolean> = new BehaviorSubject(false);
+	public isDashboardListUpdated: BehaviorSubject<boolean> = new BehaviorSubject(false);
+	maxGridRow: number;
+	maxGridRowColumn: number;
+	dashboardType: string;
+	privateDashboardId: string;
 }

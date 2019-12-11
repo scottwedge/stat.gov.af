@@ -8,8 +8,8 @@
 				</div>
 			</div>
 			<div class="col-lg-5 col-md-5 col-sm-12 f-image">
-				<div class="wrapper">
-					<img src="../../assets/img/stat-slider.png" alt="">
+				<div class="img-wrapper">
+					<img src="../../assets/img/Stat.png" alt="">
 				</div>
 			</div>
 		</div>
@@ -63,7 +63,7 @@
 
 		<h3 class="ds-name">{{ 'DASHBOARDS' | translate }}</h3>
 
-		<div class="owl-carousel owl-theme" *ngIf="dashboards" dir="ltr">
+		<div class="owl-carousel owl-theme" *ngIf="showDashboards" dir="ltr">
 			<div class="item" *ngFor="let d of dashboards">
 				<div class="card" [ngStyle]="{ 'background-color': d.bgColor}">
 					<div class="overlay">
@@ -73,7 +73,7 @@
 								<span *ngFor="let t of d.tags" class="badge">{{ t[lang] }}</span>
 							</div>
 							<button class="btn btn-sm btn-fill btn-danger view-d"
-								(click)="gotoDashboard(d.slug)">{{ 'VIEW' | translate }}</button>
+								(click)="gotoDashboard(d.slug)" [attr.data-title]="d.slug">{{ 'VIEW' | translate }}</button>
 						</div>
 					</div>
 				</div>

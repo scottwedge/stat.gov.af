@@ -34,6 +34,12 @@ export async function findOne(req: Request, res: Response, next: NextFunction): 
     try {
         const query: IDashboardModel = await DashboardService.findOne(req.params.id);
 
+        console.log('ERequest Params Id: ', req.params.id);
+        
+
+        console.log('Query: ', query);
+        
+
         const widgetIds: any = query.widgets;
 
         console.log('Widget IDs: ', widgetIds);

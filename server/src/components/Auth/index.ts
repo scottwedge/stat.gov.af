@@ -25,6 +25,7 @@ export async function signup(req: Request, res: Response, next: NextFunction): P
         user.save().then(() => {
             res.json({
                 token,
+                user,
                 status: 200,
                 logged: true,
                 message: 'Sign in successfull'

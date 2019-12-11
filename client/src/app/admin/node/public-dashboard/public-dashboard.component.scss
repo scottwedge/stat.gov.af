@@ -110,3 +110,12 @@ input[type=submit] {
   position: absolute;
   z-index: 12;
 }
+
+.change-tab {
+  color: #447DF7;
+  cursor: pointer;
+}
+
+.change-tab:hover {
+  text-decoration: underline;
+}

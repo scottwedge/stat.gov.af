@@ -6,6 +6,7 @@ import { GridStackItem, GridStackOptions, GridStackItemComponent, GridStackCompo
 import { Dashboard, dashboardGridOptions } from '../../../../../models/dashboard';
 import Swal from 'sweetalert2';
 import { TranslateService } from '@ngx-translate/core';
+import { Globals } from 'app/core';
 
 
 declare var $: any;
@@ -24,6 +25,7 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 	loading: boolean;
 	allWidgets: any;
 	originalDashboard;
+	charts;
 	// @Input('isReadOnly') readonly;
 	readOnly;
 	allWidgetsLoaded = false;
@@ -33,7 +35,8 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 		private datasourceDashboardService: DatasourceDashboardService,
 		private translate: TranslateService,
 		private datasourceWidgetService: DatasourceWidgetService,
-		private router: Router
+		private router: Router,
+		public globals: Globals
 	) { }
 
 	ngOnInit() {
@@ -41,11 +44,46 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 		this.recordId = history.state.recordId;
 		this.readOnly = history.state.readonly;
 
+		this.charts = [];
 		this.allWidgets = [];
+		this.dashboard = {};
 
 		console.log('Read Only: ', this.readOnly);
 
 		console.log('record ID: ', this.recordId);
+
+		this.charts = JSON.parse(localStorage.getItem('pCharts'));
+		console.log('charts: ', this.charts);
+
+		setTimeout(() => {
+			this.initGridstack();
+		}, 10);
+
+		// Check if the page is not hard refreshed
+		// if (this.globals.privateDashboardId) {
+		// 	console.log('From local');
+
+		// 	if (localStorage && localStorage.getItem('pCharts')) {
+		// 		this.charts = JSON.parse(localStorage.getItem('pCharts'));
+		// 		setTimeout(() => {
+		// 			this.initGridstack();
+		// 		}, 10);
+		// 	}
+		// } else {
+		// 	console.log('From Server');
+
+		// 	this.fetchDashboardWidgets();
+		// }
+
+	}
+
+
+	fetchDashboardWidgets() {
+
+		// Clear the cache before getting the charts from server
+		if (localStorage && localStorage.getItem('pCharts')) {
+			localStorage.removeItem('pCharts');
+		}
 
 		this.datasourceDashboardService.loadById(this.recordId).subscribe((data) => {
 			this.dashboard = data;
@@ -57,6 +95,15 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 			this.dashboard.widgets.map(w => {
 				w.state = 'unchanged'
 			});
+
+			// Save the charts locally to avoid redirect reloading
+			if (localStorage) {
+				this.charts = this.dashboard.widgets;
+				localStorage.setItem('pCharts', JSON.stringify(this.charts));
+			} else {
+				alert('Sorry your browser doesnt support localstorage');
+			}
+
 			setTimeout(() => {
 				this.initGridstack();
 			}, 10);
@@ -68,12 +115,16 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 			this.router.navigate(['/custom/my-dashboards']);
 
 		});
-
 	}
 
 
 	initGridstack() {
 		$('.grid-stack').gridstack({
+
+			animate: true,
+			auto: true,
+			width: 12,
+			float: true,
 
 			// if true the resizing handles are shown even the user is not hovering over the widget
 			alwaysShowResizeHandle: true,
@@ -143,9 +194,12 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 	saveNewGridAttributes(elem) {
 
 		const chartId = $(elem).attr('id');
+		console.log('charId: ', typeof chartId);
 		console.log('charId: ', chartId);
-		this.dashboard.widgets.map(chart => {
-			if (chart._id === chartId) {
+		this.charts.map(chart => {
+			console.log('chart ID: ', typeof chart._id);
+			
+			if (String(chart._id) === chartId) {
 				console.log('this id matches', chartId);
 				console.log($(elem).attr('data-gs-x'));
 				console.log('Element is : ', elem);
@@ -160,7 +214,9 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 			return chart;
 		});
 
-		console.log(this.dashboard.widgets);
+		localStorage.setItem('pCharts', JSON.stringify(this.charts));
+
+		console.log(this.charts);
 
 	}
 
@@ -249,11 +305,54 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 	createWidget() {
 		$('#createModal').modal('toggle');
 		this.showCreateModal = false;
+		this.globals.maxGridRow = this.getMaxRow();
+		this.globals.privateDashboardId = this.recordId;
+		this.globals.dashboardType = 'private';
+		this.router.navigate(['/build-query']);
 
 	}
 
 	saveCharts() {
 
+	}
+
+
+	getMaxRow() {
+		let maxRow = 0;
+		let maxRowColumnCount = 0;
+
+		// Find the max row
+		this.charts.map(c => {
+			if (c.gridstack.row > maxRow) {
+				console.log(c.gridstack.row);
+				maxRow = c.gridstack.row;
+			}
+
+			return c;
+		});
+
+		// check if this row is having enough space to add new widget with data-gs-x = 6
+		this.charts.filter(c => c.gridstack.row === maxRow).map(c => {
+			maxRowColumnCount += c.gridstack.sizeX;
+		});
+
+		console.log('Max Row Before: ', maxRow);
+
+
+		if (maxRowColumnCount > 6) {
+
+			// Shift the max row to next row
+			maxRow += 5;
+			this.globals.maxGridRowColumn = 0;
+		} else {
+			// To start from where the first widget finished in that row
+			this.globals.maxGridRowColumn = maxRowColumnCount;
+		}
+
+		console.log('Max Row After: ', maxRow);
+		console.log('Max Column Count: ', maxRowColumnCount);
+
+		return maxRow;
 	}
 
 

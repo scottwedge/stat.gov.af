@@ -5,36 +5,36 @@
         <div class="title-wrapper">
           <h3 class="title">{{ 'MY_DASHBOARD_MANAGEMENT' | translate }}</h3><br>
           <div class="title-actions">
-            <button class="btn btn-success" type="button" [routerLink]="['/build-query']" [disabled]="loading"
+            <button class="btn btn-success" type="button" (click)="addNewWidget()" [disabled]="isLoading"
               data-toggle="tooltip" data-placement="top" [title]="'ADD-WIDGET' | translate">
-              <span class="btn-label" *ngIf="!loading">
+              <span class="btn-label" *ngIf="!isLoading">
                 <i class="fa fa-plus"></i> {{ 'ADD-WIDGET' | translate }}
               </span>
-              <i class="fa fa-spinner fa-spin" *ngIf="loading"></i>
+              <i class="fa fa-spinner fa-spin" *ngIf="isLoading"></i>
             </button>
 
-            <button class="btn btn-waning" type="button" [disabled]="loading || !charts.length" data-toggle="tooltip"
+            <button class="btn btn-waning" type="button" [disabled]="isLoading || !charts.length" data-toggle="tooltip"
               data-placement="top" [title]="'SAVE-DASHBOARD' | translate" (click)="checkUserLoggedIn()">
-              <span class="btn-label" *ngIf="!loading">
+              <span class="btn-label" *ngIf="!isLoading">
                 <i class="fa fa-save"></i>
               </span>
-              <i class="fa fa-spinner fa-spin" *ngIf="loading"></i>
+              <i class="fa fa-spinner fa-spin" *ngIf="isLoading"></i>
             </button>
 
-            <button class="btn btn-info" type="button" (click)="refresh()" [disabled]="loading" data-toggle="tooltip"
+            <button class="btn btn-info" type="button" (click)="refresh()" [disabled]="isLoading" data-toggle="tooltip"
               data-placement="top" [title]="'REFRESH-DASHBOARD' | translate">
-              <span class="btn-label" *ngIf="!loading">
+              <span class="btn-label" *ngIf="!isLoading">
                 <i class="fa fa-refresh"></i>
               </span>
-              <i class="fa fa-spinner fa-spin" *ngIf="loading"></i>
+              <i class="fa fa-spinner fa-spin" *ngIf="isLoading"></i>
             </button>
 
-            <button class="btn btn-danger" type="button" [disabled]="loading || !charts.length" data-toggle="tooltip"
+            <button class="btn btn-danger" type="button" [disabled]="isLoading || !charts.length" data-toggle="tooltip"
               data-placement="top" [title]="'RESET-DASHBOARD' | translate" (click)="resetCharts()">
-              <span class="btn-label" *ngIf="!loading">
+              <span class="btn-label" *ngIf="!isLoading">
                 <i class="fa fa-trash"></i>
               </span>
-              <i class="fa fa-spinner fa-spin" *ngIf="loading"></i>
+              <i class="fa fa-spinner fa-spin" *ngIf="isLoading"></i>
             </button>
 
             <!-- <div class="chart-indicators">
@@ -64,8 +64,9 @@
             [attr.data-gs-width]="chart.gridstack.sizeX" [attr.data-gs-height]="chart.gridstack.sizeY">
             <div class="grid-stack-item-content card">
               <button class="btn-xs btn btn-danger remove-chart" (click)="removeChart(chart._id)">X</button>
-              <plotly-plot [data]="chart.data" [config]="chart.config" [layout]="chart.layout" [id]="chart._id + 'p'" [useResizeHandler]="true"
-                [style]="{position: 'relative', width: '100%', height: '100%'}" #plotlyChartContainer>
+              <plotly-plot [data]="chart.data" [config]="chart.config" [layout]="chart.layout" [id]="chart._id + 'p'"
+                [useResizeHandler]="true" [style]="{position: 'relative', width: '100%', height: '100%'}"
+                #plotlyChartContainer>
               </plotly-plot>
             </div>
           </div>
@@ -75,9 +76,9 @@
       </div>
       <ng-template #nodata>
         <div><br>
-          <div [class.dot-falling]="loading"></div>
-          <div *ngIf="!loading" class="text-center">
-            <button class="btn btn-success btn-fill btn-lg" [routerLink]="['/build-query']">
+          <div [class.dot-falling]="isLoading"></div>
+          <div *ngIf="!isLoading" class="text-center">
+            <button class="btn btn-success btn-fill btn-lg" (click)="addNewWidget()">
               <i class="fa fa-plus"></i> {{ 'ADD-WIDGET' | translate }} / {{ 'ANALYZE-DATA' | translate }}
             </button>
           </div>
@@ -133,7 +134,7 @@
                     data-dismiss="modal">
                 </div>
                 <div class="form-group">
-                  <small>{{ 'NOACCOUNT' | translate }} <span
+                  <small>{{ 'NOACCOUNT' | translate }} <span class="change-tab"
                       (click)="changeTab('signup')">{{ 'SIGNUP' | translate }}</span></small>
                 </div>
               </form>
@@ -173,7 +174,7 @@
                     data-dismiss="modal">
                 </div>
                 <div class="form-group">
-                  <small>{{ 'HAVEACCOUNT' | translate }} <span
+                  <small>{{ 'HAVEACCOUNT' | translate }} <span class="change-tab"
                       (click)="changeTab('login')">{{ 'LOGIN' | translate }}</span></small>
                 </div>
               </form>

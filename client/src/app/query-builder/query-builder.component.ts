@@ -306,6 +306,9 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit {
 				}
 			}
 		});
+
+
+
 	}
 
 	initializeTable() {
@@ -749,7 +752,7 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit {
 			this.datasouceQueryService
 				.getResourceData(resource[0].element.value)
 				.subscribe(resourceData => {
-					// console.log("resourceData", resourceData);
+					console.log("resourceData", resourceData);
 					this.dTableFlag = true;
 					this.resourceId = resourceData.result.resource_id;
 					resourceData.result.fields.forEach(element => {
@@ -761,20 +764,28 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit {
 					});
 					resourceData.result.records.forEach(element => {
 						let val = [];
-						for (let prop in element) {
-							let isNum = /^\d*\.?\d+$/.test(element[prop]);
-							if (isNum) {
-								element[prop] = Number(element[prop]);
-							}
-							val.push(element[prop]);
+
+						const sortable = [];
+						for (let p in element) {
+							sortable.push([p, element[p]]);
 						}
+						
+						// The object must be sorted to the order of fields
+						sortable.sort(this.sortDataSourceData(this.columnNames));
+
+						sortable.forEach(p => {
+							const isNum = /^\d*\.?\d+$/.test(p[1]);
+							if (isNum) {
+								p[1] = Number(p[1]);
+							}
+							val.push(p[1]);
+
+							return p;
+						});
+
 						this.data.push(val);
 					});
-					// console.log(this.data);
-					// console.log("columnNames",this.columnNames)
 
-					// After taking out the columns remove the first element of the data
-					// this.data.splice(0, 1);
 					this.prepareDataforDataTable();
 
 					// Parse data for better handling
@@ -815,6 +826,17 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit {
 					this.checkColumnDataType(resourceData.result.fields);
 				});
 		}
+	}
+
+	sortDataSourceData(cNames) {
+
+		return (a, b) => {
+			const aIndex = cNames.findIndex(x => x.name === a[0]);
+			const bIndex = cNames.findIndex(y => y.name === b[0]);
+
+			return aIndex - bIndex;
+		}
+
 	}
 
 	// handleChange(event) {

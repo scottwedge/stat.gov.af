@@ -15,7 +15,7 @@
                     <div class="modal-body">
                         <div class="widgets">
 
-                            <select name="dash-list" id="dash-list" class="widgets-list">
+                            <select name="dash-list" id="dash-list" class="widgets-list" #widgetsList>
                                 <option value="" disabled>Choose Widget</option>
                                 <option *ngFor="let w of allWidgets.widgets" [value]="w._id">
                                     {{w.name? w.name : 'CHRT_NAME' }}</option>
@@ -27,7 +27,7 @@
                         </div>
                         <hr>
                         <div>
-                            <button class="btn btn-behance btn-block btn-fill btn-success">Add Widget</button>
+                            <button class="btn btn-block btn-fill btn-success" [disabled]="!widgetsList.value">Add Widget</button>
                         </div>
                     </div>
                 </div>
@@ -60,29 +60,29 @@
 
 
                 <div *ngIf="dashboard">
-                    <div *ngIf="dashboard.widgets.length; else nodata">
+                    <div *ngIf="charts.length; else nodata">
                         <div>
                             <div class="grid-stack" data-gs-width="12" data-gs-animate="yes" id="w-gridstack">
-                                <div class="grid-stack-item" *ngFor="let widget of  dashboard.widgets" [id]="widget._id"
-                                    [attr.data-gs-x]="widget.gridstack.col"
-                                    [attr.data-gs-y]="widget.gridstack.row"
-                                    [attr.data-gs-width]="widget.gridstack.sizeX"
-                                    [attr.data-gs-height]="widget.gridstack.sizeY"
+                                <div class="grid-stack-item" *ngFor="let chart of  charts" [id]="chart._id"
+                                    [attr.data-gs-x]="chart.gridstack.col"
+                                    [attr.data-gs-y]="chart.gridstack.row"
+                                    [attr.data-gs-width]="chart.gridstack.sizeX"
+                                    [attr.data-gs-height]="chart.gridstack.sizeY"
                                     [attr.data-gs-no-move]="readOnly ? 'yes' : 'no'"
                                     [attr.data-gs-no-resize]="readOnly ? 'yes' : 'no'"
                                     [attr.data-gs-locked]="readOnly ? 'yes' : 'no'">
                                     <div class="grid-stack-item-content card">
                                         <button class="btn-xs btn btn-danger remove-chart" [hidden]="readOnly"
-                                            (click)="removeChart(widget._id)">X</button>
+                                            (click)="removeChart(chart._id)">X</button>
 
-                                        <plotly-plot [data]="widget.data" [config]="widget.config"
-                                            [layout]="widget.layout" [useResizeHandler]="true"
+                                        <plotly-plot [data]="chart.data" [config]="chart.config"
+                                            [layout]="chart.layout" [useResizeHandler]="true"
                                             [style]="{position: 'relative', width: '100%', height: '100%'}"
                                             #plotlyChartContainer>
                                         </plotly-plot>
                                         <div class="indicator saved-indicator"
-                                            [class.unsaved-indicator]="widget.state=='modified'"
-                                            [class.new-indicator]="widget.state=='new'"></div>
+                                            [class.unsaved-indicator]="chart.state=='modified'"
+                                            [class.new-indicator]="chart.state=='new'"></div>
                                     </div>
                                 </div>
                             </div>

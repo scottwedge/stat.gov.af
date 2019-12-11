@@ -31,3 +31,25 @@ supervisorctl update
 
 
 https://blog.risingstack.com/operating-node-in-production/
+
+
+Deploying to server
+
+## Create a zip file from server folder.
+## Remove node_modules if you want the size to be small
+## Copy the zip file to server.
+## Move the .zip file to /opt
+
+- sudo mv server.zip /opt/
+
+## If you have not included node_modules in your zip file the run the following command first.
+- sudo find ./server -mindepth 1 ! -regex '^./server/node_modules\(/.*\)?' -delete
+
+## Unzip the file there
+
+- sudo unzip server.zip
+
+
+## to grant full permssion to the files and folders in ./server folder run
+
+- sudo chmod -R 777 ./server/

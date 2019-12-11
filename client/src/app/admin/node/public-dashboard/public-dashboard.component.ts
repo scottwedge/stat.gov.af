@@ -134,6 +134,13 @@ export class PublicDashboardComponent implements OnInit {
 
 	}
 
+	validateNumber(el) {
+		const elValue = el.value;
+		if (!(/^[0-9]*$/gm).test(elValue) || elValue.length > 10) {
+			$(el).val(elValue.slice(0, elValue.length - 1));
+		}
+	}
+
 	fetchDataFromLocalStorage() {
 
 		if (window.localStorage) {
@@ -142,9 +149,14 @@ export class PublicDashboardComponent implements OnInit {
 				setTimeout(() => {
 					this.initGridStack();
 
-					// Autoscale all the charts
-					(<HTMLElement>document.querySelector('[data-title="Autoscale"]')).click();
-					// this.initPlotly();
+					if (this.charts.length) {
+
+						// Autoscale all the charts
+						document.querySelectorAll('[data-title="Autoscale"]').forEach(el => {
+							(<HTMLElement>el).click();
+						});
+						// this.initPlotly();
+					}
 				}, 10);
 			}
 		}
@@ -209,7 +221,7 @@ export class PublicDashboardComponent implements OnInit {
 			this.registerForm.reset({});
 
 			this.authService.saveToken(res.token);
-			this.authService.setLoggedInUserId(res.user_id);
+			this.authService.setLoggedInUserId(res.user._id);
 
 			// Save the chart
 			this.getDashboardName();
@@ -221,6 +233,49 @@ export class PublicDashboardComponent implements OnInit {
 			this.isLoading = false;
 
 		});
+	}
+
+	addNewWidget() {
+		this.globals.maxGridRow = this.getMaxRow();
+		this.globals.dashboardType = 'public';
+		this.router.navigate(['/build-query']);
+	}
+
+	getMaxRow() {
+		let maxRow = 0;
+		let maxRowColumnCount = 0;
+
+		// Find the max row
+		this.charts.map(c => {
+			if (c.gridstack.row > maxRow) {
+				console.log(c.gridstack.row);
+				maxRow = c.gridstack.row;
+			}
+
+			return c;
+		});
+
+		// check if this row is having enough space to add new widget with data-gs-x = 6
+		this.charts.filter(c => c.gridstack.row === maxRow).map(c => {
+			maxRowColumnCount += c.gridstack.sizeX;
+		});
+
+		console.log('Max Row Before: ', maxRow);
+
+
+		if (maxRowColumnCount > 6) {
+
+			// Shift the max row to next row
+			maxRow += 5;
+			this.globals.maxGridRowColumn = 0;
+		} else {
+			this.globals.maxGridRowColumn = 6;
+		}
+
+		console.log('Max Row After: ', maxRow);
+		console.log('Max Column Count: ', maxRowColumnCount);
+
+		return maxRow;
 	}
 
 
@@ -250,9 +305,13 @@ export class PublicDashboardComponent implements OnInit {
 	}
 
 	initGridStack() {
-		$('.grid-stack').gridstack({
+		this.gridStackEl = $('.grid-stack').gridstack({
 
 			// widget class
+			animate: true,
+			auto: true,
+			width: 12,
+			float: true,
 			itemClass: 'grid-stack-item',
 			draggable: { handle: '.grid-stack-item-content', scroll: true, appendTo: 'body' },
 			// allows to owerride jQuery UI resizable options
@@ -334,13 +393,7 @@ export class PublicDashboardComponent implements OnInit {
 			console.log('server response: ', response);
 			const msg = 'Record successfully created';
 			this.dashboardId = response._id;
-			Swal({
-				title: this.translate.instant('WELL_DONE'),
-				text: this.translate.instant('WIDGET_SUBMITTED'),
-				buttonsStyling: false,
-				confirmButtonClass: 'btn btn-fill btn-success',
-				type: 'success'
-			}).catch(Swal.noop)
+
 			this.isLoading = false;
 			this.saveCharts();
 		}, (err) => {
@@ -401,6 +454,7 @@ export class PublicDashboardComponent implements OnInit {
 				}]);
 			delete chart['_id'];
 			delete chart['saved'];
+			delete chart['state'];
 			delete chart['filteredData'];
 			chart.user = this.authService.getLoggedInUserId();
 			return chart;
@@ -455,6 +509,7 @@ export class PublicDashboardComponent implements OnInit {
 	}
 
 	removeChart(chartId) {
+
 		this.charts = JSON.parse(localStorage.getItem('charts'));
 		this.charts.forEach((el, i) => {
 			if (el._id === chartId) {

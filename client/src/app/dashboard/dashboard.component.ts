@@ -89,6 +89,8 @@ export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
 			console.log('params: ', param);
 			if (param.get('slug')) {
 				this.slug = param.get('slug');
+				console.log('Slug is: ', this.slug);
+				
 				this.getDashboard(this.slug);
 			}
 		});

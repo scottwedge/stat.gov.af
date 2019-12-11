@@ -41,10 +41,13 @@
                         <span class="text-default">{{ 'DASHBOARDS' | translate }}<i class="fa fa-angle-down"></i></span>
                     </a>
                     <ul class="dropdown-menu" *ngIf="globals.dashboardList.length">
-                        <li><a href="#" [routerLink]="['/dashboard']">{{ 'HOME' | titlecase  | translate }}</a></li>
-                        <li *ngFor="let dashboard of globals.dashboardList"><a href="#"
+                        <!-- <li *ngFor="let dashboard of globals.dashboardList"><a href="#"
                                 [routerLink]="['/dashboard', dashboard.slug]"><span>{{ getTitleByLang(dashboard.slug) | titlecase  | translate }}</span></a>
-                        </li>
+                        </li> -->
+
+                        <li *ngFor="let dashboard of globals.dashboardList"><a href="#"
+                            [routerLink]="['/dashboard', dashboard.slug]"><span>{{ dashboard.name[globals.lang] }}</span></a>
+                    </li>
                     </ul>
                 </li>
 
