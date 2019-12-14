@@ -129,8 +129,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 		if (this.globals.dashboardList && this.globals.dashboardList.length) {
 			this.renderCarousel();
 		} else {
-			this.dGlobal$ = this.globals.isDashboardListUpdated;
-			this.dGlobal$.subscribe((value) => {
+			this.dGlobal$ = this.globals.isDashboardListUpdated.subscribe((value) => {
 				console.log(value);
 				this.owl = undefined;
 				if (true === value) {

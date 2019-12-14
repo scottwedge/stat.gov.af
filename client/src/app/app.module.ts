@@ -13,7 +13,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 // ngx-translate
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -24,6 +24,7 @@ import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
+import { HttpConfigInterceptor } from './_interceptor/http-config.interceptor';
 
 
 import { ReactiveFormsModule } from '@angular/forms';
@@ -131,7 +132,12 @@ PlotlyModule.plotlyjs = PlotlyJS;
 			useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
 		},
 		Globals,
-		CookieService
+		CookieService,
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: HttpConfigInterceptor,
+			multi: true
+		}
 	],
 	bootstrap: [AppComponent]
 })

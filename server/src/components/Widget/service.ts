@@ -75,13 +75,14 @@ const WidgetService: IWidgetService = {
  */
     async update(code: string, body: IWidgetModel): Promise<IWidgetModel> {
         try {
-            const validate: Joi.ValidationResult<IWidgetModel> = WidgetValidation.create(body);
 
-            if (validate.error) {
-                throw new Error(validate.error.message);
-            }
+            // const validate: Joi.ValidationResult<IWidgetModel> = WidgetValidation.create(body);
 
-            const user: IWidgetModel = await WidgetModel.update({ _id: Types.ObjectId(code) }, body);
+            // if (validate.error) {
+            //     throw new Error(validate.error.message);
+            // }
+
+            const user: IWidgetModel = await WidgetModel.updateOne({ _id: Types.ObjectId(code) }, body);
 
             return user;
         } catch (error) {

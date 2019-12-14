@@ -22,7 +22,7 @@ interface RequestWithUser extends Request {
  *       in: header
  *       name: x-access-token
  */
-export function isAuthenticated(req: RequestWithUser, res: Response, next: NextFunction): void {
+export function isAuthenticated(req: Request, res: Response, next: NextFunction): void {
     console.log(req.headers['x-access-token']);
     const token: any = req.headers['x-access-token'];
 
@@ -31,8 +31,12 @@ export function isAuthenticated(req: RequestWithUser, res: Response, next: NextF
             const user: object | string = jwt.verify(token, app.get('secret'));
 
             req.user = user;
+          
+
+            console.log('Request AUTH: ', req.user);
             
-            return next();
+            
+            return next();  
 
         } catch (error) {
             return next(new HttpError(401, http.STATUS_CODES[401]));

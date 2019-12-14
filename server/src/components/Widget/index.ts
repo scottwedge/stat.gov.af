@@ -118,6 +118,69 @@ export async function bulkAdd(req: Request, res: Response, next: NextFunction): 
     }
 }
 
+
+/**
+ * @export
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * @returns {Promise < void >}
+ */
+export async function bulkUpdate(req: any, res: Response, next: NextFunction): Promise<void> {
+    try {
+        let passFlag: boolean = true;
+        let resMsg: String = '';
+        const ids: any = [];
+        const dashboardId: String = req.body.dashboardId;
+
+    
+        for (let i = 0; i < req.body.grids.length; i++) {
+            console.log(req.body.grids[i].id);
+
+            const wID: string = req.body.grids[i].id;
+
+            const widget: IWidgetModel = await WidgetService.findOne(wID);
+
+            if (widget) {
+
+                widget.gridstack.map((g: any) => {
+                    if (g.dashboardId === dashboardId) {
+                        g.gridstack = JSON.parse(req.body.grids[i].gridstack);
+                    }
+                });
+
+                const uWidget: IWidgetModel = await WidgetService.update(wID, widget);
+
+                if (!uWidget) {
+                    passFlag = false;
+                    resMsg = `Widget could not be updated, ID:  ${wID}`;
+                    break;
+                } else {
+                    ids.push(wID);
+                }
+            } else {
+                passFlag = false;
+                resMsg = `Widget could not be found, ID: ${wID}`;
+                break;
+            }
+        }
+
+        if (passFlag) {
+            res.status(200).json({
+                ids,
+                message: 'charts successfully saved',
+            });
+        } else {
+            res.status(500).json({
+                message: resMsg
+            });
+        }
+
+    } catch (error) {
+        next(new HttpError(error.message.status, error.message));
+    }
+}
+
 /**
  * @export
  * @param {Request} req
@@ -128,7 +191,7 @@ export async function bulkAdd(req: Request, res: Response, next: NextFunction): 
 export async function findByDashboardId(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
         const dashboardId = req.params.id;
-        
+
         console.log('req params: ', req.params.id);
 
         res.status(200).json({
@@ -152,7 +215,7 @@ export async function findByUserId(req: Request, res: Response, next: NextFuncti
         const userId = req.params.id;
 
         const widgets: IWidgetModel[] = await WidgetService.findAllByUserId(userId);
-        
+
         console.log('req params: ', req.params.id);
 
         res.status(200).json({

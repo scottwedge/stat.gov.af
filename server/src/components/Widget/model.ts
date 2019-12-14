@@ -15,7 +15,7 @@ export interface IWidgetModel extends Document {
     config: Object;
     data: Object;
     layout: Object;
-    gridstack: Object;
+    gridstack: Array<Object>;
     createdAt: string;
 }
 

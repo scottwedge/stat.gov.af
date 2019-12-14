@@ -39,7 +39,10 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="title-wrapper">
-                    <h3 class="title">{{ dashboard?.name }}</h3>
+                    <div class="title">
+                        <h3 class="t">Dashboard Name</h3>
+                        <!-- <h3 >{{ dashboard?.name }}</h3> -->
+                    </div>
                     <div class="title-actions pull-right">
                         <button class="btn btn-success" type="button" (click)="addNew()" [disabled]="loading">
                             <span class="btn-label" *ngIf="!loading">
@@ -47,14 +50,15 @@
                             </span>
                             <i class="fa fa-spinner fa-spin" *ngIf="loading"></i>
                         </button>
-                        <button class="btn btn-info" type="button" (click)="refresh()" [disabled]="loading">
+                        <button class="btn btn-info" type="button" (click)="updateModifiedWidgets()" [disabled]="loading || !dsModified">
                             <span class="btn-label" *ngIf="!loading">
-                                <i class="fa fa-refresh"></i>
+                                <i class="fa fa-save"></i>
                             </span>
                             <i class="fa fa-spinner fa-spin" *ngIf="loading"></i>
                         </button>
                     </div>
                 </div>
+                <hr>
 
                 <br><br><br>
 

@@ -3114,3 +3114,11 @@ body {
     margin-left: -40px !important;
     margin-right: auto !important;
 }
+
+.rtl .title-wrapper .title-actions button {
+    float: left !important;
+}
+
+.rtl .remove-chart {
+    left: 0;
+}

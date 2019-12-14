@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
 import { DatasourceDashboardService } from 'app/services/datasource.dashboard.service';
 import { DatasourceWidgetService } from 'app/services/datasource.widget.service';
+import { AuthService } from 'app/services/auth.service';
 import { Router } from '@angular/router';
 import { GridStackItem, GridStackOptions, GridStackItemComponent, GridStackComponent } from 'ng4-gridstack'
 import { Dashboard, dashboardGridOptions } from '../../../../../models/dashboard';
@@ -26,16 +27,20 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 	allWidgets: any;
 	originalDashboard;
 	charts;
-	// @Input('isReadOnly') readonly;
+	dsModified;
 	readOnly;
 	allWidgetsLoaded = false;
-
+	newWidgets;
+	newWidgetsIds;
+	modifiedWidgets;
 
 	constructor(
 		private datasourceDashboardService: DatasourceDashboardService,
 		private translate: TranslateService,
 		private datasourceWidgetService: DatasourceWidgetService,
 		private router: Router,
+		private authService: AuthService,
+		private widgetService: DatasourceWidgetService,
 		public globals: Globals
 	) { }
 
@@ -46,7 +51,13 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 
 		this.charts = [];
 		this.allWidgets = [];
-		this.dashboard = {};
+		this.dashboard;
+		this.newWidgets = [];
+		this.newWidgetsIds = [];
+		this.modifiedWidgets = {
+			dashboardId: '',
+			grids: []
+		};
 
 		console.log('Read Only: ', this.readOnly);
 
@@ -55,25 +66,39 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 		this.charts = JSON.parse(localStorage.getItem('pCharts'));
 		console.log('charts: ', this.charts);
 
+
+
 		setTimeout(() => {
 			this.initGridstack();
 		}, 10);
 
 		// Check if the page is not hard refreshed
-		// if (this.globals.privateDashboardId) {
-		// 	console.log('From local');
+		if (this.globals.privateDashboardId) {
 
-		// 	if (localStorage && localStorage.getItem('pCharts')) {
-		// 		this.charts = JSON.parse(localStorage.getItem('pCharts'));
-		// 		setTimeout(() => {
-		// 			this.initGridstack();
-		// 		}, 10);
-		// 	}
-		// } else {
-		// 	console.log('From Server');
+			if (localStorage && localStorage.getItem('pCharts') && localStorage.getItem('pCharts').length) {
+				console.log('From local');
+				this.charts = JSON.parse(localStorage.getItem('pCharts'));
+				setTimeout(() => {
+					this.initGridstack();
+				}, 10);
 
-		// 	this.fetchDashboardWidgets();
-		// }
+				// See if dashboard is modified
+				this.charts.map(chart => {
+					if (chart.state === 'new' || chart.state === 'modified') {
+						this.dsModified = true;
+					}
+				});
+			} else {
+				if (localStorage && localStorage.getItem('pCharts')) {
+					localStorage.removeItem('pCharts');
+				}
+				console.log('From Server');
+
+				this.fetchDashboardWidgets();
+			}
+		} else {
+			this.router.navigate(['/custom/my-dashboards']);
+		}
 
 	}
 
@@ -100,6 +125,7 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 			if (localStorage) {
 				this.charts = this.dashboard.widgets;
 				localStorage.setItem('pCharts', JSON.stringify(this.charts));
+				this.dsModified = false;
 			} else {
 				alert('Sorry your browser doesnt support localstorage');
 			}
@@ -112,7 +138,6 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 		}, (err) => {
 
 			console.log('Dashboard ID doesn\'t exist!');
-			this.router.navigate(['/custom/my-dashboards']);
 
 		});
 	}
@@ -194,21 +219,35 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 	saveNewGridAttributes(elem) {
 
 		const chartId = $(elem).attr('id');
-		console.log('charId: ', typeof chartId);
-		console.log('charId: ', chartId);
 		this.charts.map(chart => {
-			console.log('chart ID: ', typeof chart._id);
-			
+
 			if (String(chart._id) === chartId) {
-				console.log('this id matches', chartId);
-				console.log($(elem).attr('data-gs-x'));
+				console.log('O/charId: ', chartId);
+				console.log('M/chart ID: ', chart._id);
+				const chartCurrentValue = JSON.stringify(chart.gridstack);
+
+				console.log('current gridstack: ', chartCurrentValue);
 				console.log('Element is : ', elem);
 
 				chart.gridstack.col = Number($(elem).attr('data-gs-x'));
 				chart.gridstack.row = Number($(elem).attr('data-gs-y'));
 				chart.gridstack.sizeX = Number($(elem).attr('data-gs-width'));
 				chart.gridstack.sizeY = Number($(elem).attr('data-gs-height'));
-				chart.state = 'modified';
+
+				console.log('changed gridstack: ', JSON.stringify(chart.gridstack));
+
+				// Update the stat only if the values are changed and the widget is unchanged
+				if (JSON.stringify(chart.gridstack) !== chartCurrentValue) {
+					console.log('changed');
+					if (chart.state === 'unchanged') {
+						console.log('modified');
+						chart.state = 'modified';
+						this.dsModified = true;
+					}
+				} else {
+					console.log('Did not change');
+				}
+
 			}
 
 			return chart;
@@ -216,7 +255,7 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 
 		localStorage.setItem('pCharts', JSON.stringify(this.charts));
 
-		console.log(this.charts);
+		// console.log(this.charts);
 
 	}
 
@@ -225,21 +264,25 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 
 		$('.grid-stack').on('gsresizestop', function (event, elem) {
 			console.log('resize');
-			that.saveNewGridAttributes(elem);
-			const elId = $(elem).attr('id');
+			$('.grid-stack > .grid-stack-item:visible').map(function (i, el) {
+				that.saveNewGridAttributes(el);
+				const elId = $(elem).attr('id');
 
-			console.log(elId);
-			setTimeout(() => {
-				const dElement = (<HTMLElement>document.getElementById(elId));
-				(<HTMLElement>dElement.querySelector('[data-title="Autoscale"]')).click();
-			}, 250);
+				console.log(elId);
+				setTimeout(() => {
+					const dElement = (<HTMLElement>document.getElementById(elId));
+					(<HTMLElement>dElement.querySelector('[data-title="Autoscale"]')).click();
+				}, 250);
+			});
 		});
 
 		$('.grid-stack').on('dragstop', function (event, ui) {
 			console.log('drag');
-			// Wait until the the stat of the element has changed
+			// Wait until the the state of the element has changed
 			setTimeout(() => {
-				that.saveNewGridAttributes(event.target);
+				$('.grid-stack > .grid-stack-item:visible').map(function (i, el) {
+					that.saveNewGridAttributes(el);
+				});
 			}, 10);
 		});
 	}
@@ -290,11 +333,13 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 			useRejections: true
 		}).then(
 			result => {
-				this.dashboard.widgets.forEach((el, i) => {
+				this.charts.forEach((el, i) => {
 					if (el._id === chartId) {
-						this.dashboard.widgets.splice(i, 1);
+						this.charts.splice(i, 1);
 					}
 				});
+
+				localStorage.setItem('pCharts', JSON.stringify(this.charts));
 			},
 			dismiss => {
 				console.log(`dialog was dismissed by ${dismiss}`);
@@ -353,6 +398,82 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 		console.log('Max Column Count: ', maxRowColumnCount);
 
 		return maxRow;
+	}
+
+
+	saveDashboard() {
+
+		// 1: Extract the widgets that are newly added
+		this.newWidgets = this.charts.filter(chart => chart.state === 'new');
+
+		// 2: Extract the widgets that are modified
+		this.modifiedWidgets = this.charts.filter(chart => chart.state === 'modified');
+
+	}
+
+	saveNewWidgets() {
+
+		this.newWidgets.map(chart => {
+			chart.name = chart.layout.hasOwnProperty('title') ? chart.layout.title.text : 'CHART_NAME';
+			chart.layout['title'] = chart.name;
+			chart.layout = JSON.stringify(chart.layout);
+			chart.config = JSON.stringify(chart.config);
+			chart.data = JSON.stringify(chart.data);
+			chart.gridstack = JSON.stringify(
+				[{
+					dashboardId: this.recordId,
+					gridstack: chart.gridstack
+				}]);
+			delete chart['_id'];
+			delete chart['saved'];
+			delete chart['state'];
+			delete chart['filteredData'];
+			chart.user = this.authService.getLoggedInUserId();
+			return chart;
+		});
+
+		this.widgetService.addBulkWidgets(this.newWidgets).subscribe(res => {
+			console.log(res);
+			this.newWidgetsIds = res.ids;
+
+			this.charts.map(chart => {
+				chart.saved = true;
+				return chart;
+			});
+
+			this.updateModifiedWidgets();
+
+		}, err => {
+			console.log('err: ', err);
+		});
+
+	}
+
+
+	updateModifiedWidgets() {
+
+		this.modifiedWidgets.grids = [];
+
+		this.modifiedWidgets.dashboardId = this.recordId;
+
+		this.charts.map(chart => {
+			if (chart.state === 'modified') {
+				this.modifiedWidgets.grids.push({
+					id: chart._id,
+					gridstack: JSON.stringify(chart.gridstack)
+				});
+			}
+		});
+
+		console.log('-- Modified Widgets: ', this.modifiedWidgets);
+
+
+		this.widgetService.updateBulkWidgets(this.modifiedWidgets).subscribe(res => {
+			console.log(res);
+		})
+
+		console.log('modified Widgets: ', this.modifiedWidgets);
+
 	}
 
 

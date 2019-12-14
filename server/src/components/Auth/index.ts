@@ -12,11 +12,11 @@ import app from '../../config/server/server';
  * @param {NextFunction} next 
  * @returns {Promise < void >}
  */
-export async function signup(req: Request, res: Response, next: NextFunction): Promise < void > {
+export async function signup(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
         const user: IUserModel = await AuthService.createUser(req.body);
         const kind: string = 'admin';
-        const token: string = jwt.sign({ _id: user._id }, app.get('secret'), {
+        const token: string = jwt.sign({ _id: user._id, name: user.fullName }, app.get('secret'), {
             expiresIn: '1800m'
         });
 
@@ -50,15 +50,15 @@ export async function signup(req: Request, res: Response, next: NextFunction): P
  * @param {NextFunction} next
  * @returns {Promise < void >}
  */
-export async function login(req: Request, res: Response, next: NextFunction): Promise < void > {
+export async function login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
         const user: IUserModel = await AuthService.getUser(req.body);
         const kind: string = 'admin';
 
-        const token: string = jwt.sign({ _id: user._id }, app.get('secret'), {
+        const token: string = jwt.sign({ _id: user._id, name: user.fullName }, app.get('secret'), {
             expiresIn: '1800m'
         });
-        
+
         user.tokens.push({ token, kind });
         user.lastLogin = new Date();
         user.save().then(() => {
@@ -81,4 +81,6 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
             message: error.message
         });
     }
+
+
 }

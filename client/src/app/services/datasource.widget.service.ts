@@ -52,4 +52,8 @@ export class DatasourceWidgetService {
 	addBulkWidgets(data): Observable<any> {
 		return this.http.post(`${this.nodeApi}/bulk-add`, data);
 	}
+
+	updateBulkWidgets(data): Observable<any> {
+		return this.http.put(`${this.nodeApi}/bulk-update`, data);
+	}
 }

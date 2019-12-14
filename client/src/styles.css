@@ -277,3 +277,20 @@
 .owl-carousel .owl-nav {
   padding-top: .5rem !important;
 }
+
+/* CODE FOR TITLES */
+.title-wrapper {
+  display: flex;
+}
+
+.title-wrapper .title .t {
+  margin: auto;
+}
+
+.title-wrapper .title-actions {
+  flex: 1;
+}
+
+.title-wrapper .title-actions button {
+  float: right;
+}

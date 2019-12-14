@@ -15,21 +15,29 @@ router.get('/one/:id', WidgetComponent.findOne);
 
 /**
  * GET method route
- * @example http://localhost:PORT/node-api/queries
+ * @example http://localhost:PORT/node-api/all
  */
 router.get('/all', WidgetComponent.findAll);
 
 /**
  * POST method route
- * @example http://localhost:PORT/node-api/queries
+ * @example http://localhost:PORT/node-api/create
  */
 router.post('/create', WidgetComponent.create);
 
 /**
  * POST method route
- * @example http://localhost:PORT/node-api/queries
+ * @example http://localhost:PORT/node-api/bulk-add
  */
 router.post('/bulk-add', WidgetComponent.bulkAdd);
+
+
+/**
+ * PUT method route
+ * @example http://localhost:PORT/node-api/bulk-udpate
+ */
+router.put('/bulk-update', jwtConfig.isAuthenticated, WidgetComponent.bulkUpdate);
+
 
 /**
  * POST method route

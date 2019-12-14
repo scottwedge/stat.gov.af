@@ -53,6 +53,12 @@ export class MydashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 	) { }
 
 	ngOnInit() {
+
+		// Remove the cached data for the previous dashboard
+		if (localStorage && localStorage.getItem('pCharts')) {
+			localStorage.removeItem('pCharts');
+		}
+
 		this.reloadData();
 
 		this.dtOptions = {
@@ -128,7 +134,7 @@ export class MydashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.dTableFlag = false;
 		this.datasourceDashboardService.loadByUserId().subscribe(data => {
 			console.log('My dashboards:', data);
-			
+
 			this.result = data.dashboards;
 			this.dTableFlag = true;
 			this.cdref.detectChanges();
@@ -174,15 +180,15 @@ export class MydashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 	viewRecord(recordId) {
 
 
-			// if (!this.globals.principal.hasAuthority(['ADMIN', 'ROLE_VIEW'])) {
-			// 	return false;
-			// }
-			this.router.navigate(['/custom/my-dashboards/edit'], {
-				state: {
-					recordId: recordId,
-					readonly: true
-				}
-			});
+		// if (!this.globals.principal.hasAuthority(['ADMIN', 'ROLE_VIEW'])) {
+		// 	return false;
+		// }
+		this.router.navigate(['/custom/my-dashboards/edit'], {
+			state: {
+				recordId: recordId,
+				readonly: true
+			}
+		});
 
 	}
 
@@ -204,6 +210,8 @@ export class MydashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 		// 	});
 		// }
 		console.log('Data', recordId);
+
+		this.globals.privateDashboardId = recordId;
 
 		this.router.navigate(['/custom/my-dashboards/edit'], {
 			state: {
