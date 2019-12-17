@@ -4,6 +4,7 @@ import {
 	AfterViewInit,
 	ChangeDetectorRef
 } from '@angular/core';
+import { Location } from '@angular/common';
 import * as XLSX from 'xlsx';
 import { DatasourceQueryService } from 'app/services/datasource.query.service';
 import { DatatablesService } from '../services/datatables.service';
@@ -62,7 +63,8 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit {
 		public authService: AuthService,
 		private translate: TranslateService,
 		private datatables: DatatablesService,
-		private router: Router
+		private router: Router,
+		private location: Location
 	) { }
 
 	ngOnInit() {
@@ -857,7 +859,8 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit {
 		if ($.fn.dataTable.isDataTable('#datatables')) {
 			this.resetData();
 		}
-		this.router.navigate(['/public-dashboard']);
+		// this.router.navigate(['/public-dashboard']);
+		this.location.back();
 	}
 	changeLanguage() {
 		this.dataTablesObservable = this.datatables.callToServiceMethodSource.subscribe(

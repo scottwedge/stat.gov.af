@@ -35,10 +35,10 @@ export async function findOne(req: Request, res: Response, next: NextFunction): 
         const query: IDashboardModel = await DashboardService.findOne(req.params.id);
 
         console.log('ERequest Params Id: ', req.params.id);
-        
+
 
         console.log('Query: ', query);
-        
+
 
         const widgetIds: any = query.widgets;
 
@@ -124,9 +124,33 @@ export async function remove(req: Request, res: Response, next: NextFunction): P
  */
 export async function update(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        const query: IDashboardModel = await DashboardService.update(req.params.id, req.body);
+        let query: IDashboardModel = await DashboardService.findOne(req.params.id);
 
-        res.status(200).json(query);
+        if (query) {
+            console.log('Dashboard body: ', req.body);
+            
+            console.log('before update: ', query.widgets);
+
+            query = req.body;
+
+            console.log('after update: ', query.widgets);
+
+
+            console.log(JSON.stringify(query));
+            
+
+            const uDashboard: IDashboardModel = await DashboardService.update(req.params.id, query);
+
+            if (uDashboard) {
+                res.status(200).json(query);
+            } else {
+                res.status(500).json({
+                    msg: 'An error Occured'
+                });
+            }
+
+        }
+
     } catch (error) {
         next(new HttpError(error.message.status, error.message));
     }

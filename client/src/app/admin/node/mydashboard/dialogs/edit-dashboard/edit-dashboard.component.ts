@@ -8,6 +8,7 @@ import { Dashboard, dashboardGridOptions } from '../../../../../models/dashboard
 import Swal from 'sweetalert2';
 import { TranslateService } from '@ngx-translate/core';
 import { Globals } from 'app/core';
+import { DatasourceDashboard } from 'app/models/datasource.dashboard';
 
 
 declare var $: any;
@@ -33,6 +34,9 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 	newWidgets;
 	newWidgetsIds;
 	modifiedWidgets;
+	deletedWidgets;
+	deletedWidgetIds;
+	modifiedWidgetsIds: any;
 
 	constructor(
 		private datasourceDashboardService: DatasourceDashboardService,
@@ -51,7 +55,11 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 
 		this.charts = [];
 		this.allWidgets = [];
-		this.dashboard;
+		this.deletedWidgetIds = [];
+		this.deletedWidgets = {
+			dashboardId: '',
+			wIds: []
+		};
 		this.newWidgets = [];
 		this.newWidgetsIds = [];
 		this.modifiedWidgets = {
@@ -124,6 +132,9 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 			// Save the charts locally to avoid redirect reloading
 			if (localStorage) {
 				this.charts = this.dashboard.widgets;
+				this.charts.map(chart => {
+					chart.saved = true
+				});
 				localStorage.setItem('pCharts', JSON.stringify(this.charts));
 				this.dsModified = false;
 			} else {
@@ -335,7 +346,9 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 			result => {
 				this.charts.forEach((el, i) => {
 					if (el._id === chartId) {
-						this.charts.splice(i, 1);
+						// this.charts.splice(i, 1);
+						el.state = 'deleted';
+						this.dsModified = true;
 					}
 				});
 
@@ -353,6 +366,9 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 		this.globals.maxGridRow = this.getMaxRow();
 		this.globals.privateDashboardId = this.recordId;
 		this.globals.dashboardType = 'private';
+
+		localStorage.setItem('privateDashboardId', this.recordId);
+
 		this.router.navigate(['/build-query']);
 
 	}
@@ -401,51 +417,56 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 	}
 
 
-	saveDashboard() {
-
-		// 1: Extract the widgets that are newly added
-		this.newWidgets = this.charts.filter(chart => chart.state === 'new');
-
-		// 2: Extract the widgets that are modified
-		this.modifiedWidgets = this.charts.filter(chart => chart.state === 'modified');
-
+	updateDashboard() {
+		this.saveNewWidgets();
 	}
 
 	saveNewWidgets() {
 
-		this.newWidgets.map(chart => {
-			chart.name = chart.layout.hasOwnProperty('title') ? chart.layout.title.text : 'CHART_NAME';
-			chart.layout['title'] = chart.name;
-			chart.layout = JSON.stringify(chart.layout);
-			chart.config = JSON.stringify(chart.config);
-			chart.data = JSON.stringify(chart.data);
-			chart.gridstack = JSON.stringify(
-				[{
-					dashboardId: this.recordId,
-					gridstack: chart.gridstack
-				}]);
-			delete chart['_id'];
-			delete chart['saved'];
-			delete chart['state'];
-			delete chart['filteredData'];
-			chart.user = this.authService.getLoggedInUserId();
-			return chart;
-		});
+		// This is to avoid copy with reference
+		const dw = this.charts.filter(chart => chart.state === 'new');
+		this.newWidgets = JSON.stringify(dw);
+		this.newWidgets = JSON.parse(this.newWidgets);
 
-		this.widgetService.addBulkWidgets(this.newWidgets).subscribe(res => {
-			console.log(res);
-			this.newWidgetsIds = res.ids;
 
-			this.charts.map(chart => {
-				chart.saved = true;
+		if (this.newWidgets.length) {
+
+			this.newWidgets.map(chart => {
+				chart.name = chart.layout.hasOwnProperty('title') ? chart.layout.title.text : 'CHART_NAME';
+				chart.layout['title'] = chart.name;
+				chart.layout = JSON.stringify(chart.layout);
+				chart.config = JSON.stringify(chart.config);
+				chart.data = JSON.stringify(chart.data);
+				chart.gridstack = JSON.stringify(
+					[{
+						dashboardId: this.recordId,
+						gridstack: chart.gridstack
+					}]);
+				delete chart['_id'];
+				delete chart['saved'];
+				delete chart['state'];
+				delete chart['filteredData'];
+				chart.user = this.authService.getLoggedInUserId();
 				return chart;
 			});
 
-			this.updateModifiedWidgets();
+			this.widgetService.addBulkWidgets(this.newWidgets).subscribe(res => {
+				console.log(res);
+				this.newWidgetsIds = res.ids;
 
-		}, err => {
-			console.log('err: ', err);
-		});
+				this.charts.map(chart => {
+					chart.saved = true;
+					return chart;
+				});
+
+				this.updateModifiedWidgets();
+
+			}, err => {
+				console.log('err: ', err);
+			});
+		} else {
+			this.updateModifiedWidgets();
+		}
 
 	}
 
@@ -467,19 +488,102 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 
 		console.log('-- Modified Widgets: ', this.modifiedWidgets);
 
+		if (this.modifiedWidgets.grids.length) {
 
-		this.widgetService.updateBulkWidgets(this.modifiedWidgets).subscribe(res => {
-			console.log(res);
-		})
+			this.widgetService.updateBulkWidgets(this.modifiedWidgets).subscribe(res => {
+				console.log(res);
+				this.modifiedWidgetsIds = res.ids;
+				this.removeDeletedWidgets();
+			});
+		} else {
+			this.removeDeletedWidgets();
+		}
 
 		console.log('modified Widgets: ', this.modifiedWidgets);
 
 	}
 
+	removeDeletedWidgets() {
+
+		this.deletedWidgets.dashboardId = this.recordId;
+		this.deletedWidgets.wIds = [];
+		this.charts.map(chart => {
+			if (chart.saved && chart.state === 'deleted') {
+				this.deletedWidgets.wIds.push(chart._id);
+			}
+		});
+
+		console.log('deletedWidgets: ', this.deletedWidgets);
+
+
+		if (this.deletedWidgets.wIds.length) {
+			this.widgetService.detachWidgets(this.deletedWidgets).subscribe((res: any) => {
+				console.log(res);
+				this.deletedWidgetIds = res.ids;
+
+
+				// get all widget ids that are to be inserted in dashboard
+				const dsWidgetIds = [];
+				this.charts.map(c => {
+					if (c.state !== 'deleted') {
+						dsWidgetIds.push(c._id);
+					}
+				});
+
+				this.updateDashboardWigdets(dsWidgetIds);
+
+			});
+		} else {
+			const dsWidgetIds = [];
+			this.charts.map(c => {
+				if (c.state !== 'deleted') {
+					dsWidgetIds.push(c._id);
+				}
+			});
+			this.updateDashboardWigdets(dsWidgetIds);
+		}
+
+	}
+
+	updateDashboardWigdets(widgetIds) {
+
+		const obj = new DatasourceDashboard();
+		obj.name = this.dashboard.name;
+		obj.user = this.authService.getLoggedInUserId();
+		obj.layout = null;
+		obj.widgets = widgetIds;
+
+		console.log('req dashboard: ', obj);
+
+
+		this.datasourceDashboardService.update(obj, this.recordId).subscribe(res => {
 
 
 
+			this.charts.map(c => {
+				c.state = 'unchanged';
+				c.saved = true;
+			});
 
+			localStorage.setItem('pCharts', JSON.stringify(this.charts));
+			this.dsModified = false;
+
+
+			Swal(
+				{
+					title: 'Updated!',
+					text: 'This dashboard is updated',
+					type: 'success',
+					confirmButtonClass: 'btn btn-fill btn-success',
+					buttonsStyling: false
+				}
+			);
+
+			this.readOnly = true;
+
+
+		});
+	}
 
 
 }

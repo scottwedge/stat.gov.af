@@ -27,7 +27,8 @@
                         </div>
                         <hr>
                         <div>
-                            <button class="btn btn-block btn-fill btn-success" [disabled]="!widgetsList.value">Add Widget</button>
+                            <button class="btn btn-block btn-fill btn-success" [disabled]="!widgetsList.value">Add
+                                Widget</button>
                         </div>
                     </div>
                 </div>
@@ -40,8 +41,22 @@
             <div class="col-md-12">
                 <div class="title-wrapper">
                     <div class="title">
-                        <h3 class="t">Dashboard Name</h3>
-                        <!-- <h3 >{{ dashboard?.name }}</h3> -->
+                        <!-- <h3 class="t">Dashboard Name</h3> -->
+                        <h3>{{ dashboard?.name }}</h3>
+                    </div>
+                    <div class="status-colors">
+                        <div class="unchanged clw inline-block pull-right">
+                            <div class="cl saved-indicator"></div>
+                            <span>Unchanged</span>
+                        </div>
+                        <div class="modified clw inline-block pull-right">
+                            <div class="cl unsaved-indicator"></div>
+                            <span>Modified</span>
+                        </div>
+                        <div class="new clw inline-block pull-right">
+                            <div class="cl new-indicator"></div>
+                            <span>New</span>
+                        </div>
                     </div>
                     <div class="title-actions pull-right">
                         <button class="btn btn-success" type="button" (click)="addNew()" [disabled]="loading">
@@ -50,7 +65,8 @@
                             </span>
                             <i class="fa fa-spinner fa-spin" *ngIf="loading"></i>
                         </button>
-                        <button class="btn btn-info" type="button" (click)="updateModifiedWidgets()" [disabled]="loading || !dsModified">
+                        <button class="btn btn-info" type="button" (click)="updateDashboard()"
+                            [disabled]="loading || !dsModified">
                             <span class="btn-label" *ngIf="!loading">
                                 <i class="fa fa-save"></i>
                             </span>
@@ -68,9 +84,8 @@
                         <div>
                             <div class="grid-stack" data-gs-width="12" data-gs-animate="yes" id="w-gridstack">
                                 <div class="grid-stack-item" *ngFor="let chart of  charts" [id]="chart._id"
-                                    [attr.data-gs-x]="chart.gridstack.col"
-                                    [attr.data-gs-y]="chart.gridstack.row"
-                                    [attr.data-gs-width]="chart.gridstack.sizeX"
+                                    [hidden]="chart.state === 'deleted'" [attr.data-gs-x]="chart.gridstack.col"
+                                    [attr.data-gs-y]="chart.gridstack.row" [attr.data-gs-width]="chart.gridstack.sizeX"
                                     [attr.data-gs-height]="chart.gridstack.sizeY"
                                     [attr.data-gs-no-move]="readOnly ? 'yes' : 'no'"
                                     [attr.data-gs-no-resize]="readOnly ? 'yes' : 'no'"
@@ -79,8 +94,8 @@
                                         <button class="btn-xs btn btn-danger remove-chart" [hidden]="readOnly"
                                             (click)="removeChart(chart._id)">X</button>
 
-                                        <plotly-plot [data]="chart.data" [config]="chart.config"
-                                            [layout]="chart.layout" [useResizeHandler]="true"
+                                        <plotly-plot [data]="chart.data" [config]="chart.config" [layout]="chart.layout"
+                                            [useResizeHandler]="true"
                                             [style]="{position: 'relative', width: '100%', height: '100%'}"
                                             #plotlyChartContainer>
                                         </plotly-plot>

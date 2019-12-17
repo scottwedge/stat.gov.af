@@ -56,4 +56,8 @@ export class DatasourceWidgetService {
 	updateBulkWidgets(data): Observable<any> {
 		return this.http.put(`${this.nodeApi}/bulk-update`, data);
 	}
+
+	detachWidgets(data) {
+		return this.http.put(`${this.nodeApi}/detach`, data);
+	}
 }

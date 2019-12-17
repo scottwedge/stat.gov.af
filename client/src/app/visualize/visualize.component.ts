@@ -609,10 +609,24 @@ export class VisualizeComponent implements OnInit, AfterViewInit {
 
 		// Navigate to the relevant compenonet from where the request for chart was made
 		// it is either public page or private dashboard edit page
-		if (this.globals.dashboardType === 'public') {
+		// if (this.globals.dashboardType === 'public') {
+		// 	localStorage.setItem(this.localChartsArrayName, JSON.stringify(this.charts));
+		// 	this.router.navigate(['/public-dashboard']);
+		// } else {
+		// 	// set the dashboard id to the globals dashboardId
+		// 	localStorage.setItem(this.localChartsArrayName, JSON.stringify(this.charts));
+		// 	this.router.navigate(['custom/my-dashboards/edit'], { state: { recordId: this.globals.privateDashboardId } });
+		// }
+
+		if (!this.authService.isLoggedIn()) {
 			localStorage.setItem(this.localChartsArrayName, JSON.stringify(this.charts));
 			this.router.navigate(['/public-dashboard']);
 		} else {
+
+			if (localStorage.getItem('privateDashboardId')) {
+				this.globals.privateDashboardId = localStorage.getItem('privateDashboardId');
+			}
+
 			// set the dashboard id to the globals dashboardId
 			localStorage.setItem(this.localChartsArrayName, JSON.stringify(this.charts));
 			this.router.navigate(['custom/my-dashboards/edit'], { state: { recordId: this.globals.privateDashboardId } });

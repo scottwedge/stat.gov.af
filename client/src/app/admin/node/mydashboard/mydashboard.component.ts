@@ -59,6 +59,12 @@ export class MydashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 			localStorage.removeItem('pCharts');
 		}
 
+		// Remove the privateDashboardId
+		if (localStorage && localStorage.getItem('privateDashboardId')) {
+			localStorage.removeItem('privateDashboardId');
+		}
+
+
 		this.reloadData();
 
 		this.dtOptions = {

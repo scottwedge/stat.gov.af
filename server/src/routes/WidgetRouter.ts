@@ -40,6 +40,13 @@ router.put('/bulk-update', jwtConfig.isAuthenticated, WidgetComponent.bulkUpdate
 
 
 /**
+ * DELETE method route
+ * @example http://localhost:PORT/node-api/detach
+ */
+router.put('/detach', jwtConfig.isAuthenticated, WidgetComponent.detachWidgets);
+
+
+/**
  * POST method route
  * @example http://localhost:PORT/node-api/find-by-dashboard/:id
  */

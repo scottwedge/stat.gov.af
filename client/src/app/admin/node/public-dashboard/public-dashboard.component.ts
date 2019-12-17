@@ -431,6 +431,7 @@ export class PublicDashboardComponent implements OnInit {
 		}, (err) => {
 			const msg = 'There was an error creating record';
 			this.showNotification('top', 'center', msg, 'danger', 'pe-7s-attention');
+			this.isLoading = false;
 		});
 	}
 

@@ -27,8 +27,8 @@ const DashboardSchema: Schema = new Schema({
         lowercase: true, 
         required: true, 
         trim: true, 
-        index: true ,
-        unique: true
+        index: true 
+        // unique: true
     },
 
     user: {

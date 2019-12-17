@@ -133,7 +133,7 @@ export async function bulkUpdate(req: any, res: Response, next: NextFunction): P
         const ids: any = [];
         const dashboardId: String = req.body.dashboardId;
 
-    
+
         for (let i = 0; i < req.body.grids.length; i++) {
             console.log(req.body.grids[i].id);
 
@@ -169,6 +169,74 @@ export async function bulkUpdate(req: any, res: Response, next: NextFunction): P
             res.status(200).json({
                 ids,
                 message: 'charts successfully saved',
+            });
+        } else {
+            res.status(500).json({
+                message: resMsg
+            });
+        }
+
+    } catch (error) {
+        next(new HttpError(error.message.status, error.message));
+    }
+}
+
+
+/**
+ * @export
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * @returns {Promise < void >}
+ */
+export async function detachWidgets(req: any, res: Response, next: NextFunction): Promise<void> {
+    try {
+        let passFlag: boolean = true;
+        let resMsg: String = '';
+        const ids: any = [];
+        const dashboardId: String = req.body.dashboardId;
+
+
+        for (let i = 0; i < req.body.wIds.length; i++) {
+            console.log('I Index: ', i);
+
+            console.log(req.body.wIds[i]);
+
+            const wID: string = req.body.wIds[i];
+
+            const widget: IWidgetModel = await WidgetService.findOne(wID);
+
+            if (widget) {
+                console.log('Before Filter: ', JSON.stringify(widget.gridstack));
+
+                widget.gridstack = widget.gridstack.map((g: any) => g.dashboardId !== dashboardId);
+
+                if (!widget.gridstack[0]) {
+                    widget.gridstack = [];
+                }
+
+                console.log('After Filter: ', widget.gridstack);
+
+                const uWidget: IWidgetModel = await WidgetService.update(wID, widget);
+
+                if (!uWidget) {
+                    passFlag = false;
+                    resMsg = `Widget could not be updated, ID:  ${wID}`;
+                    break;
+                } else {
+                    ids.push(wID);
+                }
+            } else {
+                passFlag = false;
+                resMsg = `Widget could not be found, ID: ${wID}`;
+                break;
+            }
+        }
+
+        if (passFlag) {
+            res.status(200).json({
+                ids,
+                message: 'charts successfully detached',
             });
         } else {
             res.status(500).json({

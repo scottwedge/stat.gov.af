@@ -36,7 +36,7 @@ router.delete('/remove/:id', DashboardComponent.remove);
  * UPDATE method route
  * @example  http://localhost:PORT/api/dashboards/:id
  */
-router.put('/update/:id', DashboardComponent.update);
+router.put('/update/:id', jwtConfig.isAuthenticated, DashboardComponent.update);
 
 
 /**

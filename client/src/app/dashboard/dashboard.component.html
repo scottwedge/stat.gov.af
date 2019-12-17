@@ -25,7 +25,10 @@
                 [attr.data-gs-min-width]="widget.options.position.minSizeX"
                 [attr.data-gs-max-width]="widget.options.position.maxSizeX"
                 [attr.data-gs-min-height]="widget.options.position.minSizeY"
-                [attr.data-gs-max-height]="widget.options.position.maxSizeY">
+                [attr.data-gs-max-height]="widget.options.position.maxSizeY"
+                data-gs-no-move="yes" 
+                data-gs-no-resize="yes"
+                data-gs-locked="yes">
                 <dashboard-widget [widget]="widget" [widgetId]="widget.id"></dashboard-widget>
             </grid-stack-item>
         </grid-stack>

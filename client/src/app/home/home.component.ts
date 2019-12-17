@@ -188,8 +188,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
 			this.lang = event.lang;
 			this.cdref.detectChanges();
 			console.log('In home', this.lang);
-
-			this.owl.trigger('refresh.owl.carousel');
+			if (this.owl) {
+				this.owl.trigger('refresh.owl.carousel');
+			}
 		});
 
 
