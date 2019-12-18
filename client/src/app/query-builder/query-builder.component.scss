@@ -47,7 +47,13 @@
     width: 100%;
 }
 
+.column-list {
+    padding: 6px;
+    list-style: none;
+}
+
 .scroll {
+    background-color: whitesmoke;
     height: 100vh;
     overflow-y: scroll;
     white-space: pre-wrap;
@@ -70,13 +76,15 @@
     float: left;
     margin-right: 3%;
     // visibility: hidden;
-    width: 40px;
+    width: 0px;
     background-color: #282560;
     box-sizing: border-box;
     overflow: hidden;
     border-radius: 4px;
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
+    transition: width .2s ease-out;
+
 }
 
 .plus-icon i {
@@ -110,4 +118,9 @@
 
 .column-card .ipc {
     padding: 15px 0px;
+}
+
+.active-column {
+    border: .5px solid #01a79b;
+    box-shadow: 0 1px 20px #01a79c62, 0 0 0 1px #01a79c79;
 }

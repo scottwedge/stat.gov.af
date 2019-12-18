@@ -11,7 +11,7 @@ import { EditDashboardComponent } from './admin/node/mydashboard/dialogs/edit-da
 
 export const AppRoutes: Routes = [{
 	path: '',
-	redirectTo: 'home',
+	redirectTo: 'lang',
 	pathMatch: 'full',
 }, {
 	path: '',

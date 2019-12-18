@@ -43,10 +43,10 @@
 			<div class="row">
 				<div class="col-md-2 scroll">
 					<div class="sheetlist">
-						<ul *ngIf="data" style="padding: 0px; list-style: none;">
+						<ul *ngIf="data" class="column-list">
 							<p class="font-weight-bold">{{ 'COLUMN_LIST' | translate }}</p>
 							<li (click)="togglecheckboxes($event.target, 'cb')">
-								<div class="card column-card">
+								<div class="card">
 									<div class="content">
 										<input type="checkbox" id="toggle-all">
 										<span class="ml-1"><strong>{{ 'UNCHECK_COLUMN' | translate }}</strong></span>
@@ -54,7 +54,7 @@
 								</div>
 							</li>
 							<li *ngFor="let col of columnNames; let i=index" class="column-name">
-								<div class="card column-card">
+								<div class="card column-card" [class.active-column]="selectedColumnIndex === i ">
 									<div class="content">
 										
 										<div class="ip-controlls inline-block ipc">
@@ -62,7 +62,7 @@
 												(click)="toggleColumn($event.target, i)">
 											<span class="ml-1">{{col.name}}</span>
 										</div>
-										<div class="inline-block plus-icon ipc" (click)="showFilters(columnDataTypes[i], i)">
+										<div class="inline-block plus-icon ipc text-center" (click)="showFilters(columnDataTypes[i], i)">
 											<a data-toggle="tooltip" data-placement="top" title="Add filter"
 												[hidden]="!columnNames[i].showColumn">
 												<i class="fa fa-filter"

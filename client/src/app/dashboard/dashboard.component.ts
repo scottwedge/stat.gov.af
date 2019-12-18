@@ -48,14 +48,14 @@ export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
 		public queryService: QueryService,
 		public globals: Globals,
 		public route: ActivatedRoute,
-		public translate: TranslateService, 
+		public translate: TranslateService,
 		public datasourceQueryService: DatasourceQueryService
-		) {
+	) {
 	}
 
 	getLangDirection() {
 		if (localStorage.getItem('lang')) {
-			if(localStorage.getItem('lang') != 'en') {
+			if (localStorage.getItem('lang') != 'en') {
 				return 'rtl'
 			}
 		}
@@ -83,14 +83,14 @@ export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
 				}
 			});
 		});
-		
+
 		// If no parameter is passed then take it from Globals
 		this.route.paramMap.subscribe(param => {
 			console.log('params: ', param);
 			if (param.get('slug')) {
 				this.slug = param.get('slug');
 				console.log('Slug is: ', this.slug);
-				
+
 				this.getDashboard(this.slug);
 			}
 		});
@@ -113,7 +113,7 @@ export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
 		this.datasourceQueryService.loadQueries().subscribe(data => {
 			console.log("Datasource Data", data);
 
-		});	
+		});
 
 	}
 
@@ -149,7 +149,7 @@ export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
 
 	getDashboard(slug) {
 		console.log('Dashboard called: ', slug);
-		
+
 		if (slug) {
 			this.dashboardService.getDashboard(slug).subscribe((data) => {
 				console.log('Dashboard widgets: ', data);
@@ -302,4 +302,22 @@ export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
 		// grid._updateContainerHeight();
 		grid._updateStyles(this.calculatedMaxRows + 1);
 	}
+
+	copyWidgetIframe(val) {
+		const selBox = document.createElement('textarea');
+		selBox.style.position = 'fixed';
+		selBox.style.left = '0';
+		selBox.style.top = '0';
+		selBox.style.opacity = '0';
+		selBox.value = val.innerText;
+		document.body.appendChild(selBox);
+		selBox.focus();
+		selBox.select();
+		document.execCommand('copy');
+		document.body.removeChild(selBox);
+
+		const x = document.getElementById('snackbar');
+		setTimeout(function () { x.className = x.className.replace('show', ''); }, 100);
+	}
+
 }

@@ -81,11 +81,13 @@ export class WidgetComponent implements OnInit {
 	openBottomSheet(): void {
 		const iframeText = '<iframe src="' + this.widgetURL + '" width="720" height="391"></iframe>';
 		const x = document.getElementById('snackbar');
-		x.innerText = iframeText;
+		const xt = document.getElementById('s-text');
+		xt.innerText = iframeText;
 		x.className = 'show';
 		setTimeout(function () { x.className = x.className.replace('show', ''); }, 8500);
 	}
 
+	
 	renderWidget(force = false) {
 		if (force != true && this.widget.getQueryResult()) {
 			this.widget.getQueryResult().getById(this.widget.visualization.query.latest_query_data_id);

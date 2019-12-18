@@ -50,11 +50,11 @@ export class LoginComponent implements OnInit {
 			this.authService.setLoggedInUserId(response.user_id)
 			this.allUserRoles = response.data;
 
-			console.log("Loggend User Id", this.authService.getLoggedInUserId());
+			console.log('Loggend User Id', this.authService.getLoggedInUserId());
 
 
 			if (this.allUserRoles.length != 0) {
-				console.log("Array of data", response.data);
+				console.log('Array of data', response.data);
 
 				JSON.parse(response.data).forEach(role => {
 					role.permissions.forEach(perm => {
@@ -62,10 +62,10 @@ export class LoginComponent implements OnInit {
 					});
 				});
 				const authPrinicipal = new AuthPrincipal(response.logged, this.allPermissions, response.token);
-				localStorage.setItem("authPrincipal", JSON.stringify(authPrinicipal));
+				localStorage.setItem('authPrincipal', JSON.stringify(authPrinicipal));
 			}
 
-			this.router.navigate(['/dashboard']);
+			this.router.navigate(['/custom/my-dashboard']);
 		}, (err) => {
 			console.log('error: ', err);
 			const msg = 'Failed to Login. Please enter correct username and password'

@@ -32,6 +32,10 @@
                 <dashboard-widget [widget]="widget" [widgetId]="widget.id"></dashboard-widget>
             </grid-stack-item>
         </grid-stack>
+        <div id="snackbar">
+            <span id="s-text" #iframText></span>
+            <button class="btn btn-warning btn-sm btn-fill" (click)="copyWidgetIframe(iframText)">COPY</button>
+        </div>
 
     </div>
 </div>

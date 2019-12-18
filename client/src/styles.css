@@ -96,22 +96,38 @@
   visibility: hidden;
   min-width: 250px;
   margin-left: -125px;
-  background-color: #333;
-  color: #fff;
   text-align: center;
   border-radius: 2px;
   padding: 16px;
   position: fixed;
-  z-index: 1;
+  z-index: 10;
   left: 34%;
   bottom: 30px;
   font-size: 17px;
+  background: #f4f4f4;
+  border: 1px solid #ddd;
+  border: 3px solid #000000;
+  color: #666;
+  page-break-inside: avoid;
+  font-family: monospace;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 1.6em;
+  max-width: 100%;
+  overflow: auto;
+  padding: 1em 1.5em;
+  display: block;
+  word-wrap: break-word;
 }
 
 #snackbar.show {
   visibility: visible;
   -webkit-animation: fadein 0.5s, fadeout 0.5s 8s;
   animation: fadein 0.5s, fadeout 0.5s 8s;
+}
+
+#snackbar #s-text {
+  margin: 0px 6px;
 }
 
 @-webkit-keyframes fadein {
@@ -216,7 +232,8 @@
   padding: 0px 4px;
 }
 
-.column-name {
+.column-name input,
+.column-name .plus-icon {
   cursor: pointer;
 }
 

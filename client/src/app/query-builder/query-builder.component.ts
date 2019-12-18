@@ -482,6 +482,8 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit {
 		};
 		this.customFilters.push(cFilter);
 		this.applyFilters();
+
+		this.selectedColumnIndex = null;
 	}
 
 	applyFilters() {
@@ -587,6 +589,7 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit {
 	}
 	closeCustomFilter() {
 		this.showFilter = false;
+		this.selectedColumnIndex = null;
 	}
 
 	/*******************************************************************
@@ -740,7 +743,7 @@ export class QueryBuilderComponent implements OnInit, AfterViewInit {
 			}
 			this.data = [];
 			this.columnNames = [];
-			this.selectedColumnIndex = 0;
+			this.selectedColumnIndex = null;
 			this.selectedColumnName = '';
 			this.columnDataType = '';
 			this.columnDataTypes = [];

@@ -80,12 +80,12 @@ export class RegisterComponent implements OnInit {
 			'email': this.registerForm.get('email').value,
 			'password': this.registerForm.get('password').value
 		};
+
 		this.authService.createUser(formJson).subscribe(res => {
 			console.log('Response registration: ', res);
-			this.router.navigate(['/login']);
-		}, (err) =>
-		{
-			console.log("Registeration Failed");
+			this.router.navigate(['/custom/my-dashboard']);
+		}, (err) => {
+			console.log('Regisueration Failed');
 		});
 	}
 
