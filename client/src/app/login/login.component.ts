@@ -65,7 +65,7 @@ export class LoginComponent implements OnInit {
 				localStorage.setItem('authPrincipal', JSON.stringify(authPrinicipal));
 			}
 
-			this.router.navigate(['/custom/my-dashboard']);
+			this.router.navigate(['/custom/my-dashboards']);
 		}, (err) => {
 			console.log('error: ', err);
 			const msg = 'Failed to Login. Please enter correct username and password'

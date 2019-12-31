@@ -64,6 +64,12 @@ export const AppRoutes: Routes = [{
 			// component: DashboardComponent
 		},
 
+		{
+			path: 'my-widgets',
+			loadChildren: './admin/node/all-widgets/all-widgets.module#AllWidgetsModule'
+			// component: DashboardComponent
+		},
+
 		// {
 		// 	path: 'my-dashboards/edit',
 		// 	// loadChildren: './admin/node/mydashboard/mydashboard.module#MydashboardModule',
