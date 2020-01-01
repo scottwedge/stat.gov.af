@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DatasourceWidgetService } from 'app/services/datasource.widget.service';
 
 @Component({
 	selector: 'app-all-widgets',
@@ -7,9 +8,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AllWidgetsComponent implements OnInit {
 
-	constructor() { }
+	allWidgets;
+	loading;
+	constructor(private datasourceWidgetService: DatasourceWidgetService) { }
 
 	ngOnInit() {
+		this.allWidgets = [];
+		this.loading = false;
+
+		this.getAllWidgets();
+	}
+
+	getAllWidgets() {
+		this.loading = true;
+		this.datasourceWidgetService.loadWidgetsByUserId().subscribe((res: any) => {
+			console.log('res: ', res);
+			this.allWidgets = res.widgets;
+			this.loading = false;
+		});
 	}
 
 }

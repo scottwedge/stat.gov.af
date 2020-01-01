@@ -124,7 +124,7 @@ export class EditDashboardComponent implements OnInit, AfterViewInit {
 			// This is to undo all the changes if user want to
 			this.originalDashboard = data;
 
-			// Add stat temp value to each widget to track
+			// Add state temp value to each widget to track
 			this.dashboard.widgets.map(w => {
 				w.state = 'unchanged'
 			});

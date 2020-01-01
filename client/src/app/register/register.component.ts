@@ -81,7 +81,11 @@ export class RegisterComponent implements OnInit {
 			'password': this.registerForm.get('password').value
 		};
 
-		this.authService.createUser(formJson).subscribe(res => {
+		this.authService.createUser(formJson).subscribe((res: any) => {
+			const token = res.token;
+			this.authService.saveToken(token);
+
+			this.authService.setLoggedInUserId(res.user._id)
 			console.log('Response registration: ', res);
 			this.router.navigate(['/custom/my-dashboards']);
 		}, (err) => {

@@ -58,7 +58,7 @@
                     </a>
                 </li>
 
-                <li>
+                <li *ngIf="authService.isLoggedIn()">
                     <a [routerLink]="['/custom/my-widgets']" class="linkMousePointer">
                         <span class="text-default"><i class="fa fa-chart-bar"></i>&nbsp;&nbsp;&nbsp;
                             {{ 'MY_WIDGETS' | translate }} </span>
