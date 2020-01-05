@@ -74,9 +74,9 @@
   width: 100%;
   position: fixed;
   z-index: 400;
-  -webkit-box-shadow: 0 8px 6px -6px #cacaca;
+  /* -webkit-box-shadow: 0 8px 6px -6px #cacaca;
   -moz-box-shadow: 0 8px 6px -6px #cacaca;
-  box-shadow: 0 8px 6px -6px #cacaca;
+  box-shadow: 0 8px 6px -6px #cacaca; */
 }
 
 #navbar .dashboards-dropdown {
@@ -84,7 +84,7 @@
 }
 
 .main-outlet {
-  margin-top: 6rem;
+  margin-top: 4.2rem;
 }
 
 .legendtext {
@@ -328,4 +328,23 @@
 
 .status-colors .clw {
   margin: 15px;
+}
+
+.align-center {
+  margin: auto;
+  left: 0;
+  right: 0;
+}
+
+.no-border-card {
+  border: none !important;
+}
+
+.pages-nav,
+.pages-nav a {
+  color: #ffffff;
+}
+
+.pages-nav .site-name {
+  cursor: pointer;
 }

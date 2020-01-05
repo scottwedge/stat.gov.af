@@ -207,6 +207,10 @@
   overflow: hidden;
 }
 
+.p_left_item_inner {
+  display: table;
+}
+
 .p_left_item_inner .p_item {
   width: calc(100%/2);
   float: left;

@@ -1,6 +1,6 @@
 <!-- <div class="container">
   <router-outlet></router-outlet>
 </div> -->
-<pagesnavbar-cmp></pagesnavbar-cmp>
+<pagesnavbar-cmp *ngIf="isNotLangPage"></pagesnavbar-cmp>
 <router-outlet></router-outlet>
 <!-- <fixedplugin-cmp></fixedplugin-cmp> -->

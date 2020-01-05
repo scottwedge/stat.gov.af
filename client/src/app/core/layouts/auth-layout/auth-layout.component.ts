@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Route, Router } from '@angular/router';
 
 @Component({
 	selector: 'app-layout',
@@ -7,4 +8,13 @@ import { Component } from '@angular/core';
 	],
 	templateUrl: './auth-layout.component.html'
 })
-export class AuthLayoutComponent { }
+export class AuthLayoutComponent {
+	isNotLangPage = true;
+	constructor(private route: Router) {
+		console.log('URL: ', route.url);
+
+		if (route.url.includes('lang')) {
+			this.isNotLangPage = false;
+		}
+	}
+}

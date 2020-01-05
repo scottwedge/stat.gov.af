@@ -1,105 +1,98 @@
-<nav #navbar class="navbar navbar-default">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03"
+        aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand logo-wrapper c-pointer" [routerLink]="['/']">
+        <img src="../../../assets/img/amended-logo final final-01.svg" style="height: 38px;" alt="">
+    </a>
 
-            <a class="inline-block logo-wrapper c-pointer" style="padding: 10px;" [routerLink]="['/']">
-                <img src="../../../assets/img/amended-logo final final-01.svg" style="height: 38px;" alt="">
-            </a>
-            <a class="navbar-brand" [routerLink]="['/']">
-                <span>STAT.GOV.AF</span>
-            </a>
-        </div>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+                <a class="nav-link" href="" [routerLink]="['/']"><span
+                        class="text-default">{{ 'HOME' | translate }}</span></a>
+            </li>
+            <li *ngIf="authService.isAdmin()" class="dropdown nav-item">
+                <a class="nav-link dropdown-toggle" id="adminDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    <span class="text-default">{{ 'ADMINISTRATION' | translate }}</span>
+                </a>
+                <div class="dropdown-menu" *ngIf="administrationOpts.length" aria-labelledby="adminDropdown">
+            <li *ngFor="let item of administrationOpts"><a href="#"
+                    [routerLink]="[item.path]">{{ item.name | titlecase  | translate }}</a></li>
+    </div>
+    </li>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li>
-                    <a href="" [routerLink]="['/']"><span class="text-default">{{ 'HOME' | translate }}</span></a>
-                </li>
-                <li *ngIf="authService.isAdmin()" class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <span class="text-default">{{ 'ADMINISTRATION' | translate }}<i
-                                class="fa fa-angle-down"></i></span>
-                    </a>
-                    <ul class="dropdown-menu" *ngIf="administrationOpts.length">
-                        <li *ngFor="let item of administrationOpts"><a href="#"
-                                [routerLink]="[item.path]">{{ item.name | titlecase  | translate }}</a></li>
-                    </ul>
-                </li>
+    <li class="dropdown nav-item">
+        <a class="nav-link dropdown-toggle" id="dashboardDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            <span class="text-default">{{ 'DASHBOARDS' | translate }}</span>
+        </a>
 
+        <div class="dropdown-menu" *ngIf="globals.dashboardList.length" aria-labelledby="dashboardDropdown">
+            <!-- <li *ngFor="let dashboard of globals.dashboardList"><a href="#"
+                        [routerLink]="['/dashboard', dashboard.slug]"><span>{{ getTitleByLang(dashboard.slug) | titlecase  | translate }}</span></a>
+                </li> -->
 
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <span class="text-default">{{ 'DASHBOARDS' | translate }}<i class="fa fa-angle-down"></i></span>
-                    </a>
-                    <ul class="dropdown-menu" *ngIf="globals.dashboardList.length">
-                        <!-- <li *ngFor="let dashboard of globals.dashboardList"><a href="#"
-                                [routerLink]="['/dashboard', dashboard.slug]"><span>{{ getTitleByLang(dashboard.slug) | titlecase  | translate }}</span></a>
-                        </li> -->
+    <li *ngFor="let dashboard of globals.dashboardList"><a href="#"
+            [routerLink]="['/dashboard', dashboard.slug]"><span>{{ dashboard.name[globals.lang] }}</span></a>
+    </li>
+    </div>
+    </li>
 
-                        <li *ngFor="let dashboard of globals.dashboardList"><a href="#"
-                                [routerLink]="['/dashboard', dashboard.slug]"><span>{{ dashboard.name[globals.lang] }}</span></a>
-                        </li>
-                    </ul>
-                </li>
+    <li class="nav-item">
+        <a (click)="navigateToMyDashboards()" class="linkMousePointer nav-link">
+            <span class="text-default"><i class="fa fa-chart-line"></i>&nbsp;&nbsp;&nbsp;
+                {{ 'MY_DASHBOARDS' | translate }} </span>
+        </a>
+    </li>
 
-                <li>
-                    <a (click)="navigateToMyDashboards()" class="linkMousePointer">
-                        <span class="text-default"><i class="fa fa-line-chart"></i>&nbsp;&nbsp;&nbsp;
-                            {{ 'MY_DASHBOARDS' | translate }} </span>
-                    </a>
-                </li>
+    <li *ngIf="authService.isLoggedIn()" class="nav-item">
+        <a [routerLink]="['/custom/my-widgets']" class="linkMousePointer nav-link">
+            <span class="text-default"><i class="fa fa-chart-bar"></i>&nbsp;&nbsp;&nbsp;
+                {{ 'MY_WIDGETS' | translate }} </span>
+        </a>
+    </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+        <ul class="nav navbar-nav navbar-right">
 
-                <li *ngIf="authService.isLoggedIn()">
-                    <a [routerLink]="['/custom/my-widgets']" class="linkMousePointer">
-                        <span class="text-default"><i class="fa fa-chart-bar"></i>&nbsp;&nbsp;&nbsp;
-                            {{ 'MY_WIDGETS' | translate }} </span>
-                    </a>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-globe"></i>
-                        <span class="notification">{{languageBadge}}</span>
-                        <p class="hidden-md hidden-lg">
-                            Languages
-                            <b class="caret"></b>
-                        </p>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li *ngFor="let lang of availLangs"><a
-                                (mouseup)="changeLanguage(lang.value)">{{ lang.name }}</a></li>
-                    </ul>
-                </li>
-                <li *ngIf="!authService.isLoggedIn()">
-                    <a routerLinkActive="active" [routerLink]="['/login']">
-                        <i class="fa fa-sign-in" aria-hidden="true"></i>
-                        <p> {{ 'LOGIN' | translate }} </p>
-                    </a>
-                </li>
-                <li class="dropdown dropdown-with-icons" *ngIf="authService.isLoggedIn()">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-list"></i>
-                        <p class="hidden-md hidden-lg"> More <b class="caret"></b></p>
-                    </a>
-                    <ul class="dropdown-menu dropdown-with-icons">
-                        <li (click)="logout()">
-                            <a href="#" class="text-danger"><i class="pe-7s-close-circle"></i>{{ 'LOGOUT' | translate }}
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
+            <li class="dropdown nav-item">
+                <a class="nav-link dropdown-toggle" id="langDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-globe"></i>
+                    <span class="notification">{{languageBadge}}</span>
+                    <p class="hidden-md hidden-lg">
+                        Languages
+                        <b class="caret"></b>
+                    </p>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="langDropdown">
+                    <li *ngFor="let lang of availLangs"><a (mouseup)="changeLanguage(lang.value)">{{ lang.name }}</a>
+                    </li>
+                </div>
+            </li>
+            <li *ngIf="!authService.isLoggedIn()" class="nav-item">
+                <a routerLinkActive="active" [routerLink]="['/login']" class="nav-link">
+                    <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+                    <p> {{ 'LOGIN' | translate }} </p>
+                </a>
+            </li>
+            <li class="dropdown dropdown-with-icons" *ngIf="authService.isLoggedIn()">
+                <a class="nav-link dropdown-toggle" id="moreDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-list"></i>
+                    <p class="hidden-md hidden-lg"> More <b class="caret"></b></p>
+                </a>
+                <div class="dropdown-menu dropdown-with-icons" aria-labelledby="moreDropdown">
+                    <li (click)="logout()">
+                        <a href="#" class="text-danger"><i class="pe-7s-close-circle"></i>{{ 'LOGOUT' | translate }}
+                        </a>
+                    </li>
+                </div>
+            </li>
+        </ul>
+    </form>
+    </div>
 </nav>
