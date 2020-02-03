@@ -164,7 +164,7 @@ export class PublicDashboardComponent implements OnInit {
 
 	checkUserLoggedIn() {
 		if (this.authService.isLoggedIn()) {
-			console.log('Saving Visulaziation');
+			console.log('Saving Visualization');
 			this.getDashboardName();
 		} else {
 			this.showSignUpPopUp();

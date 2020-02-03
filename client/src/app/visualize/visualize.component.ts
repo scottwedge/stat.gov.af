@@ -263,7 +263,7 @@ export class VisualizeComponent implements OnInit, AfterViewInit {
 
 	checkUserLoggedIn() {
 		if (this.authService.isLoggedIn()) {
-			console.log('Saving Visulaziation');
+			console.log('Saving Visualization');
 			this.save();
 		} else {
 			this.showSignUpPopUp();
